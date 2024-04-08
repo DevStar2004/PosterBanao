@@ -37,9 +37,7 @@
                 
                 <?php
                    $value1 = 7.4;
-                   $value2 = phpversion();
-                   
-                   
+                   $value2 = phpversion(); 
                 ?>
                  
                 

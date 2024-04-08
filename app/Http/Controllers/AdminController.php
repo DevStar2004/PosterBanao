@@ -111,7 +111,6 @@ class AdminController extends Controller
     function login(Request $request){
         
         $request->validate([
-            
             'username' => 'required',
             'password' => 'required',
             
@@ -138,8 +137,7 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         return view('admin.create');
     }
 
