@@ -55,6 +55,7 @@ class LogoCategoryController extends Controller
         ]);
         $id = LogoCategory::create([
             "name" => $request->get("title"),
+            'owner_id' => Session::get('userid')
         ]);
          return redirect()->route('logocategory.index');
     }

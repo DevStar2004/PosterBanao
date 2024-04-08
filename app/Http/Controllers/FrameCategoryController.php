@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Setting;
+use App\Models\Admin;
 use App\Models\FrameCategory;
+
+use Session;
 
 class FrameCategoryController extends Controller
 {
@@ -15,18 +18,20 @@ class FrameCategoryController extends Controller
      */
     public function index()
     {
-        
-        $data['categories'] = FrameCategory::orderBy('id', 'DESC')->paginate(12);
-        // echo(json_encode($data['posts']));
-        // die();
-        return view('frame.category.index',$data);
+        if (Admin::isPermission('frame')) {
+            $data['categories'] = FrameCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            // echo(json_encode($data['posts']));
+            // die();
+            return view('frame.category.index', $data);
+        } else {
+            return view('frame.category.index');
+        }
     }
-    
+
     public function framecategory_status(Request $request)
     {
-        
-        $posts = FrameCategory::find($request->get("id"));
-        $posts->status = ($request->get("checked")=="true")?0:1;
+        $posts = FrameCategory::find($request->get('id'));
+        $posts->status = $request->get('checked') == 'true' ? 0 : 1;
         $posts->save();
     }
     /**
@@ -36,7 +41,6 @@ class FrameCategoryController extends Controller
      */
     public function create()
     {
-        
         return view('frame.category.create');
     }
 
@@ -49,12 +53,13 @@ class FrameCategoryController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-             'title' => 'required',
+            'title' => 'required',
         ]);
         $id = FrameCategory::create([
-            "name" => $request->get("title"),
+            'name' => $request->get('title'),
+            'owner_id' => Session::get('userid')
         ]);
-         return redirect()->route('framecategory.index');
+        return redirect()->route('framecategory.index');
     }
 
     /**
@@ -76,9 +81,8 @@ class FrameCategoryController extends Controller
      */
     public function edit($id)
     {
-        
         $data['category'] = FrameCategory::find($id);
-        return view('frame.category.edit',$data);
+        return view('frame.category.edit', $data);
     }
 
     /**
@@ -91,10 +95,10 @@ class FrameCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-             'title' => 'required',
+            'title' => 'required',
         ]);
         $posts = FrameCategory::find($id);
-        $posts->name = $request->get("title");
+        $posts->name = $request->get('title');
         $posts->save();
         return redirect()->route('framecategory.index');
     }

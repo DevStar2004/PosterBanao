@@ -192,7 +192,7 @@ Route::group(['middleware' => "web"],function(){
     Route::post('videotemplatecategory-premium-action', [VideoTemplateCategoryController::class,'Tamplate_premium_action']);
     
     //Business Card Tamplate
-    Route::resource('businesscardtamplate', BusinessCardTamplateController::class);
+    Route::resource('businesscardtemplate', BusinessCardTamplateController::class);
     Route::post('bsns-tmplt-card-status', [BusinessCardTamplateController::class,'card_status']);
     Route::post('bsns-tmplt-premium-action', [BusinessCardTamplateController::class,'card_premium_action']);
     

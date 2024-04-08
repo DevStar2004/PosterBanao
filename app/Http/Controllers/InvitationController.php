@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Setting;
 use App\Models\InvitationCard;
 use App\Models\InvitationCategory;
+use App\Models\Admin;
 use Illuminate\Support\Str;
 use ZipArchive;
 use File;
 use Storage;
+use Session;
 
 class InvitationController extends Controller
 {
@@ -20,33 +22,34 @@ class InvitationController extends Controller
      */
     public function index()
     {
-        $cards = InvitationCard::where('orientation',null)->get();
-        foreach ($cards as $card){
+        // $cards = InvitationCard::where('orientation',null)->get();
+        // foreach ($cards as $card){
             
-            $tamplate = InvitationCard::find($card->id);
-            $size = getimagesize($tamplate->thumb_url);
+        //     $tamplate = InvitationCard::find($card->id);
+        //     $size = getimagesize($tamplate->thumb_url);
             
-            if($size[0] > $size[1])
-            {
-                $orientation = "landscape";
-            }
-            if($size[0] < $size[1])
-            {
-                $orientation = "portrait";
-            }
-            if($size[0] == $size[1])
-            {
-                $orientation = "square";
-            }
+        //     if($size[0] > $size[1])
+        //     {
+        //         $orientation = "landscape";
+        //     }
+        //     if($size[0] < $size[1])
+        //     {
+        //         $orientation = "portrait";
+        //     }
+        //     if($size[0] == $size[1])
+        //     {
+        //         $orientation = "square";
+        //     }
             
-            $tamplate->orientation = $orientation;
-            $tamplate->height = $size[1];
-            $tamplate->width = $size[0];
-            $tamplate->save();
-        }
-        
-        $data['cards'] = InvitationCard::orderBy('id', 'DESC')->paginate(12);
-        return view('invitation.index',$data);
+        //     $tamplate->orientation = $orientation;
+        //     $tamplate->height = $size[1];
+        //     $tamplate->width = $size[0];
+        //     $tamplate->save();
+        // }
+        if(Admin::isPermission('posts')) {
+            $data['cards'] = InvitationCard::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            return view('invitation.index',$data);
+        } else return view('invitation.index');
     }
 
     /**
@@ -214,6 +217,7 @@ class InvitationController extends Controller
             $tamplate->thumb_url = $thumbnail_url;
         }
         
+        $tamplate->owner_id = Session::get('userid');
         $tamplate->save();
         return redirect()->route('invitationcard.index');
     }
