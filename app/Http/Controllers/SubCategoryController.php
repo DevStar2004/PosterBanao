@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\Setting;
@@ -22,9 +23,11 @@ class SubCategoryController extends Controller
     
     public function businessCategory()
     {
-        $data['categories'] = SubCategory::with('category')->where('type','business')->orderBy('id', 'DESC')->paginate(12);
-        $data['type'] = "business";
-        return view('subcategory.index',$data);
+        if(Admin::isPermission('category') == 'true') {
+            $data['categories'] = SubCategory::with('category')->where('type','business')->orderBy('id', 'DESC')->paginate(12);
+            $data['type'] = "business";
+            return view('subcategory.index',$data);
+        } else return view('subcategory.index');
     }
     
     public function searchCategory(Request $request)

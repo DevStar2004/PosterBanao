@@ -100,7 +100,7 @@ Route::group(['middleware' => "web"],function(){
     
     //Festival Posts
     Route::resource('festival', FestivalController::class);
-    Route::get('festivalCategory/{id}', [FestivalController::class,'filterby_category']);
+    Route::get('festivalCategory/{id}', [FestivalController::class, 'filterby_category']);
     
     //political Posts
     Route::resource('political', PoliticalController::class);
@@ -174,7 +174,7 @@ Route::group(['middleware' => "web"],function(){
     Route::post('logos-action', [LogosController::class,'logos_action']);
     Route::post('logos-premium-action', [LogosController::class,'logos_premium_action']);
     
-    //Stickers Category
+    //Logo Category
     Route::resource('logocategory', LogoCategoryController::class);
     Route::post('logocategory-status', [LogoCategoryController::class,'logocategory_status']);
     

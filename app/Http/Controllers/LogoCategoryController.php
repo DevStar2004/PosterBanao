@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\LogoCategory;
 
+use Session;
 class LogoCategoryController extends Controller
 {
     /**
@@ -15,10 +17,12 @@ class LogoCategoryController extends Controller
      */
     public function index()
     {
-         $data['categories'] = LogoCategory::orderBy('id', 'DESC')->paginate(12);
-        // echo(json_encode($data['posts']));
-        // die();
-        return view('logo.category.index',$data);
+        if(Admin::isPermission('category') == 'true') {
+            $data['categories'] = LogoCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            // echo(json_encode($data['posts']));
+            // die();
+            return view('logo.category.index',$data);
+        } else return view('logo.category.index');
     }
     
      public function logocategory_status(Request $request)

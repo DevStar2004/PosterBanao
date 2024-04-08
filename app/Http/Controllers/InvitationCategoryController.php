@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\InvitationCategory;
 use Illuminate\Support\Str;
 
+use Session;
 class InvitationCategoryController extends Controller
 {
     /**
@@ -16,8 +18,12 @@ class InvitationCategoryController extends Controller
      */
     public function index()
     {
-        $data['categories'] = InvitationCategory::orderBy('id', 'DESC')->paginate(22);
-        return view('invitation.category.index',$data);
+        if (Admin::isPermission('category') == 'true') {
+            $data['categories'] = InvitationCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(22);
+            return view('invitation.category.index', $data);
+        } else {
+            return view('invitation.category.index');
+        }
     }
 
     /**
@@ -25,17 +31,17 @@ class InvitationCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-     
+
     public function category_status(Request $request)
     {
-        $posts = InvitationCategory::find($request->get("id"));
-        $posts->status = ($request->get("checked")=="true")?0:1;
+        $posts = InvitationCategory::find($request->get('id'));
+        $posts->status = $request->get('checked') == 'true' ? 0 : 1;
         $posts->save();
     }
-    
+
     public function create()
     {
-        return view("invitation.category.create");
+        return view('invitation.category.create');
     }
 
     /**
@@ -47,45 +53,45 @@ class InvitationCategoryController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-             'image' => 'required|mimes:jpg,png,jpeg',
-             'title' => 'required',
+            'image' => 'required|mimes:jpg,png,jpeg',
+            'title' => 'required',
         ]);
-        
+
         $posts = new InvitationCategory();
-        $posts->name = $request->get("title");
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+        $posts->name = $request->get('title');
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            $thumbName = Str::uuid() . '.' .$extension;
-            
+            $thumbName = Str::uuid() . '.' . $extension;
+
             $image->move('uploads/posts', $fileName);
-            $item_url = 'uploads/posts/'.$fileName;
-            $thumbnail_url = 'uploads/posts/'.$thumbName;
-                
-            switch($extension){ 
+            $item_url = 'uploads/posts/' . $fileName;
+            $thumbnail_url = 'uploads/posts/' . $thumbName;
+
+            switch ($extension) {
                 case 'jpeg':
-                    $image = imagecreatefromjpeg($item_url); 
-                    break; 
-                case 'png': 
-                    $image = imagecreatefrompng($item_url); 
-                    break; 
-                case 'gif': 
-                    $image = imagecreatefromgif($item_url); 
-                    break; 
-                default: 
-                    $image = imagecreatefromjpeg($item_url); 
+                    $image = imagecreatefromjpeg($item_url);
+                    break;
+                case 'png':
+                    $image = imagecreatefrompng($item_url);
+                    break;
+                case 'gif':
+                    $image = imagecreatefromgif($item_url);
+                    break;
+                default:
+                    $image = imagecreatefromjpeg($item_url);
             }
-            
+
             imagejpeg($image, $thumbnail_url, 50);
-            
+
             @unlink($item_url);
-            
+
             $posts->image = $thumbnail_url;
         }
-        
+
         $posts->save();
         return redirect()->route('invitationcategory.index');
     }
@@ -110,7 +116,7 @@ class InvitationCategoryController extends Controller
     public function edit($id)
     {
         $data['category'] = InvitationCategory::find($id);
-        return view("invitation.category.edit", $data);
+        return view('invitation.category.edit', $data);
     }
 
     /**
@@ -123,45 +129,45 @@ class InvitationCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-             'title' => 'required',
+            'title' => 'required',
         ]);
-        
+
         $posts = InvitationCategory::find($id);
-        $posts->name = $request->get("title");
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+        $posts->name = $request->get('title');
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            $thumbName = Str::uuid() . '.' .$extension;
-            
+            $thumbName = Str::uuid() . '.' . $extension;
+
             $image->move('uploads/posts', $fileName);
-            $item_url = 'uploads/posts/'.$fileName;
-            $thumbnail_url = 'uploads/posts/'.$thumbName;
-            
-            switch($extension){ 
+            $item_url = 'uploads/posts/' . $fileName;
+            $thumbnail_url = 'uploads/posts/' . $thumbName;
+
+            switch ($extension) {
                 case 'jpeg':
-                    $image = imagecreatefromjpeg($item_url); 
-                    break; 
-                case 'png': 
-                    $image = imagecreatefrompng($item_url); 
-                    break; 
-                case 'gif': 
-                    $image = imagecreatefromgif($item_url); 
-                    break; 
-                default: 
-                    $image = imagecreatefromjpeg($item_url); 
+                    $image = imagecreatefromjpeg($item_url);
+                    break;
+                case 'png':
+                    $image = imagecreatefrompng($item_url);
+                    break;
+                case 'gif':
+                    $image = imagecreatefromgif($item_url);
+                    break;
+                default:
+                    $image = imagecreatefromjpeg($item_url);
             }
-            
+
             imagejpeg($image, $thumbnail_url, 99);
-            
+
             @unlink($item_url);
             @unlink($posts->image);
-            
+
             $posts->image = $thumbnail_url;
         }
-        
+
         $posts->save();
         return redirect()->route('invitationcategory.index');
     }
