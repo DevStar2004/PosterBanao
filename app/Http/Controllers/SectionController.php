@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Section;
 use App\Models\Setting;
 use Illuminate\Support\Str;
+use Session;
 
 class SectionController extends Controller
 {
@@ -16,7 +17,6 @@ class SectionController extends Controller
      */
     public function index()
     {
-        
         $data['sections'] = Section::orderBy('orders', 'ASC')->paginate(150);
         return view('section.index',$data);
     }
@@ -67,6 +67,7 @@ class SectionController extends Controller
         ]);
         $sec =new Section();
         $sec->name = $request->get("title");
+        $sec->owner_id = Session::get('userid');
         $sec->save();
         return redirect()->route('section.index');
     }

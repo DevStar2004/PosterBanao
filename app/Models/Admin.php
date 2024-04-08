@@ -19,6 +19,7 @@ class Admin extends Model
         $permission = json_decode($user->permissions, true);
         
         return $permission[$for];
+        // return true;
     }
     
 }

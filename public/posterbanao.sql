@@ -46,12 +46,12 @@ CREATE TABLE `admin` (
 
 INSERT INTO `admin` (`id`, `username`, `email`, `profile_pic`, `password`, `role`, `permissions`, `active`, `updated_at`, `created_at`) VALUES
 (1, 'admin', 'test@gmail.com', 'uploads/profile/61cb91a9-e024-4643-a3f4-ca5fef244eaa.png', '$2y$10$pGDqbmTLd69atOsE81KOz.gx5EZrTe8n1HskL4AIeg/D01PPkXF1y', 'Super', '{\"section\":\"true\",\"category\":\"true\",\"posts\":\"true\",\"greeting\":\"true\",\"video\":\"true\",\"slider\":\"true\",\"frame\":\"true\",\"subscription\":\"true\",\"offerdialog\":\"true\",\"pushnotification\":\"true\",\"contacts\":\"true\",\"transaction\":\"true\",\"user\":\"true\",\"setting\":\"true\",\"admin\":\"true\"}', 0, '2023-06-06 22:33:14', '2022-11-02 11:18:12'),
-(14, 'demo', 'demo@gmail.com', 'uploads/profile/9b98f807-e9e2-48c2-96bc-81c2657fad61.png', '$2y$10$FSEMcc.9c6ICkqqz6NxLwO.PYic9hB8Bfu3IppQLiTF2rXwuHdlKG', 'Demo', '{\"section\":\"true\",\"category\":\"true\",\"posts\":\"true\",\"greeting\":\"true\",\"video\":\"true\",\"slider\":\"true\",\"frame\":\"true\",\"subscription\":\"true\",\"offerdialog\":\"true\",\"pushnotification\":\"true\",\"contacts\":\"true\",\"transaction\":\"true\",\"user\":\"true\",\"setting\":\"true\",\"admin\":\"true\"}', 0, '2023-02-16 06:23:58', '2022-12-31 06:55:52');
+(2, 'demo', 'demo@gmail.com', 'uploads/profile/9b98f807-e9e2-48c2-96bc-81c2657fad61.png', '$2y$10$FSEMcc.9c6ICkqqz6NxLwO.PYic9hB8Bfu3IppQLiTF2rXwuHdlKG', 'Demo', '{\"section\":\"true\",\"category\":\"true\",\"posts\":\"true\",\"greeting\":\"true\",\"video\":\"true\",\"slider\":\"true\",\"frame\":\"true\",\"subscription\":\"true\",\"offerdialog\":\"true\",\"pushnotification\":\"true\",\"contacts\":\"true\",\"transaction\":\"true\",\"user\":\"true\",\"setting\":\"true\",\"admin\":\"true\"}', 0, '2023-02-16 06:23:58', '2022-12-31 06:55:52');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `background`
+-- Table structure for table `backgro und`
 --
 
 CREATE TABLE `background` (

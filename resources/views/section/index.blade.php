@@ -46,7 +46,9 @@
                             
                             <td class="align-middle">
                                 <div class="form-switch align-items-center justify-content-center" >
-                                    <input class="form-check-input status-switch" type="checkbox" data-id="{{$section->id}}" @if($section->status==0) checked @endif>
+                                    <input class="form-check-input status-switch" type="checkbox" 
+                                      data-id="{{$section->id}}" @if($section->status==0) checked @endif 
+                                      @if(Session::get('userid') != $section->owner_id || App\Models\Admin::isPermission('section')  == 'false') disabled @endif>
                                 </div>
                             </td>
                             
@@ -58,8 +60,14 @@
                             <td class="align-middle">
                             <div class="ms-auto text-end align-middle text-center text-sm">
                                 <a class="btn btn-icon-only btn-rounded btn-warning"><i class="fas fa-hand-paper"></i></a>
-                                <a href="#" data-id="{{$section->id}}" data-toggle="modal" data-target="#deleteModal" class="btn btn-icon-only btn-rounded btn-danger"><i class="far fa-trash-alt"></i></a>
-                                <a class="btn btn-icon-only btn-rounded btn-success" href="{{secure_url('/section/'.$section->id.'/edit')}}"><i class="fas fa-pencil-alt"></i></a>
+                                <a href="#" data-id="{{$section->id}}" data-toggle="modal" data-target="#deleteModal" 
+                                    class="btn btn-icon-only btn-rounded btn-danger @if(Session::get('userid') != $section->owner_id || App\Models\Admin::isPermission('section')  == 'false') disabled @endif">
+                                  <i class="far fa-trash-alt"></i>
+                                </a>
+                                <a class="btn btn-icon-only btn-rounded btn-success @if(Session::get('userid') != $section->owner_id || App\Models\Admin::isPermission('section')  == 'false') disabled @endif" 
+                                    href="{{secure_url('/section/'.$section->id.'/edit')}}">
+                                  <i class="fas fa-pencil-alt"></i>
+                                </a>
                             </div>
                             </td>
                        </tr>

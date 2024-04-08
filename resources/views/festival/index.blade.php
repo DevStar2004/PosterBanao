@@ -1,6 +1,9 @@
 @extends('main')
 
 @section('content')
+@php
+    
+@endphp
     <div class="row">
         <div class="col-12">
           <div class="card mb-4">
@@ -77,7 +80,11 @@
                              
                             <h5 class="text-white text-sm mt-0 pb-0" >{{$post->title}}</h5>
                             @if($post->section) 
-                                <button class="badge badge-sm bg-gradient-dark position-absolute" id="ser-{{ $post->id }}" onclick="removeFromSection({{$post->id}})"> {{ $post->section->name }} &nbsp; <i class="fas fa-window-close"></i>
+                                <button class="badge badge-sm bg-gradient-dark position-absolute" 
+                                  @if(Session::get('userid') != $post->owner_id || App\Models\Admin::isPermission('posts')  == 'false') disabled @endif
+                                    id="ser-{{ $post->id }}" onclick="removeFromSection({{$post->id}})"> 
+                                  {{ $post->section->name }} &nbsp; 
+                                  <i class="fas fa-window-close"></i>
                                 </button>
                             @endif
                             <div @if($post->json != '') class="mt-8" @else class="mt-9" @endif>
@@ -88,7 +95,9 @@
                                 @endif
                                 <div class="d-flex mt-2" >
                                   <div>
-                                    <a class="btn btn-icon-only btn-rounded btn-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center" href="{{secure_url('/festival/'.$post->id.'/edit')}}">
+                                    <a class="btn btn-icon-only btn-rounded btn-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center 
+                                      @if(Session::get('userid') != $section->owner_id || App\Models\Admin::isPermission('section')  == 'false') disabled @endif" 
+                                      href="{{secure_url('/festival/'.$post->id.'/edit')}}">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
                                   </div>
@@ -101,7 +110,8 @@
                                   
                                   
                                   <div class="form-switch align-items-center justify-content-center" >
-                                     <input class="form-check-input status-switch" type="checkbox" data-id="{{$post->id}}" @if($post->status==0) checked @endif>
+                                     <input class="form-check-input status-switch " 
+                                      type="checkbox" data-id="{{$post->id}}" @if($post->status==0) checked @endif>
                                   </div>
                                   
                                   <div onclick="cheakPremium({{ $post->id }})" class="align-items-center justify-content-center">
