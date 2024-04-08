@@ -123,6 +123,7 @@ class AdminController extends Controller
                 Session::put('username', $data->username);
                 Session::put('profile', $data->profile_pic);
                 Session::put('admin_type', $data->role);
+                
                 return redirect("/");
             }else{
                 return redirect()->back()->withErrors(['loginerror' => 'Username password not match']);
