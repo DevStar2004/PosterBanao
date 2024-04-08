@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Storage;
 use ZipArchive;
 use File;
+use Session;
 
 class CustomController extends Controller
 {
@@ -25,7 +26,8 @@ class CustomController extends Controller
     {
         if (Admin::isPermission('posts') == 'true') {
             $data['sections'] = Section::where('status', '0')->get();
-            $data['posts'] = Posts::with('section')->where('type', 'custom')->orderBy('id', 'DESC')->paginate(8);
+            $data['posts'] = Posts::with('section')->where('owner_id', Session::get('userid'))->
+                where('type', 'custom')->orderBy('id', 'DESC')->paginate(8);
             $data['categories'] = Category::where('status', '0')->where('type', 'custom')->get();
             // echo(json_encode($data['posts']));
             // die();

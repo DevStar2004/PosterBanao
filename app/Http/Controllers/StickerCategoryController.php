@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\StickerCategory;
-
+use Session;
 class StickerCategoryController extends Controller
 {
     /**
@@ -17,7 +17,7 @@ class StickerCategoryController extends Controller
     public function index()
     {
         if(Admin::isPermission('category') == 'true') {
-            $data['categories'] = StickerCategory::orderBy('id', 'DESC')->paginate(22);
+            $data['categories'] = StickerCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(22);
             // echo(json_encode($data['posts']));
             // die();
             return view('stickers.category.index',$data);

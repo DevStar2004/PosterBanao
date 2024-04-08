@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Setting;
 use Illuminate\Support\Str;
 use Storage;
+use Session;
 
 class CategoryController extends Controller
 {
@@ -26,7 +27,8 @@ class CategoryController extends Controller
     public function festivalCategory()
     {
         if (Admin::isPermission('category') == 'true') {
-            $data['categories'] = Category::where('type', 'festival')->orderBy('id', 'DESC')->paginate(12);
+            $data['categories'] = Category::where('type', 'festival')->where('owner_id', Session::get('userid'))->
+                orderBy('id', 'DESC')->paginate(12);
             $data['type'] = 'festival';
             return view('category.index', $data);
         } else return view('category.index');
@@ -35,7 +37,8 @@ class CategoryController extends Controller
     public function businessCategory()
     {
         if (Admin::isPermission('category') == 'true') {
-            $data['categories'] = Category::where('type', 'business')->orderBy('id', 'DESC')->paginate(12);
+            $data['categories'] = Category::where('type', 'business')->where('owner_id', Session::get('userid'))->
+                orderBy('id', 'DESC')->paginate(12);
             $data['type'] = 'business';
             return view('category.index', $data);
         } else return view('category.index');
@@ -49,7 +52,8 @@ class CategoryController extends Controller
     public function customCategory()
     {
         if (Admin::isPermission('category') == 'true') {
-            $data['categories'] = Category::where('type', 'custom')->orderBy('id', 'DESC')->paginate(12);
+            $data['categories'] = Category::where('type', 'custom')->
+                where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
             $data['type'] = 'custom';
             return view('category.index', $data);
         } else {
@@ -60,7 +64,8 @@ class CategoryController extends Controller
     public function politicalCategory()
     {
         if (Admin::isPermission('category') == 'true') {
-            $data['categories'] = Category::where('type', 'political')->orderBy('id', 'DESC')->paginate(12);
+            $data['categories'] = Category::where('type', 'political')->
+                where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
             $data['type'] = 'political';
             return view('category.index', $data);
         } else {

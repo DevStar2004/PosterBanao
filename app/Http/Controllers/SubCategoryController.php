@@ -9,6 +9,7 @@ use App\Models\SubCategory;
 use App\Models\Setting;
 use Illuminate\Support\Str;
 use Storage;
+use Session;
 
 class SubCategoryController extends Controller
 {
@@ -24,7 +25,8 @@ class SubCategoryController extends Controller
     public function businessCategory()
     {
         if(Admin::isPermission('category') == 'true') {
-            $data['categories'] = SubCategory::with('category')->where('type','business')->orderBy('id', 'DESC')->paginate(12);
+            $data['categories'] = SubCategory::with('category')->where('owner_id', Session::get('userid'))->
+                where('type','business')->orderBy('id', 'DESC')->paginate(12);
             $data['type'] = "business";
             return view('subcategory.index',$data);
         } else return view('subcategory.index');
