@@ -1,5 +1,8 @@
 @extends('main')
 
+@php
+    $is_permitted = (App\Models\Admin::isPermission('posts') == 'true');
+@endphp
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -10,12 +13,14 @@
                         <h6 class="text-white">Political Posts</h6>
 
                         <div class="ms-auto mt-3">
-                            <a href="{{ route('political.create') }}" class="btn btn-success "><i class="fas fa-plus"></i> Add
-                                Post</a>
+                            <a href="{{ route('political.create') }}" class="btn btn-success {{$is_permitted ? '' : 'disabled'}}">
+                                <i class="fas fa-plus"></i> 
+                                Add Post
+                            </a>
                         </div>
                     </div>
                 </div>
-                @if (App\Models\Admin::isPermission('posts') == 'true')
+                @if ($is_permitted == true)
                     <div class="d-flex align-items-center">
                         <div class="col-md-4">
                             <div class="form-group p-2">

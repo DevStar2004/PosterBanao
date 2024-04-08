@@ -13,57 +13,58 @@ use Session;
 
 class SubCategoryController extends Controller
 {
-    
     public function index()
     {
-      
         $data['categories'] = SubCategory::with('category')->orderBy('id', 'DESC')->paginate(12);
-        $data['type'] = "";
-        return view('subcategory.index',$data);
+        $data['type'] = '';
+        return view('subcategory.index', $data);
     }
-    
+
     public function businessCategory()
     {
-        if(Admin::isPermission('category') == 'true') {
-            $data['categories'] = SubCategory::with('category')->where('owner_id', Session::get('userid'))->
-                where('type','business')->orderBy('id', 'DESC')->paginate(12);
-            $data['type'] = "business";
-            return view('subcategory.index',$data);
-        } else return view('subcategory.index');
+        if (Admin::isPermission('category') == 'true') {
+            $data['categories'] = SubCategory::with('category')->where('owner_id', Session::get('userid'))->where('type', 'business')->orderBy('id', 'DESC')->paginate(12);
+            $data['type'] = 'business';
+            return view('subcategory.index', $data);
+        } else {
+            return view('subcategory.index');
+        }
     }
-    
+
     public function searchCategory(Request $request)
     {
-        $data['type'] = $request->get("type");
-        if($request->get("search") != ""){
-            $data['search'] = $request->get("search");
-            $data['categories'] = SubCategory::with('category')->where('type',$request->get("type"))->where('name','like',"%".$request->get("search")."%")->get();
-        }else{
-            $data['categories'] = SubCategory::with('category')->where('type',$request->get("type"))->orderBy('id', 'DESC')->paginate(12);
+        $data['type'] = $request->get('type');
+        if ($request->get('search') != '') {
+            $data['search'] = $request->get('search');
+            $data['categories'] = SubCategory::with('category')
+                ->where('type', $request->get('type'))
+                ->where('name', 'like', '%' . $request->get('search') . '%')
+                ->get();
+        } else {
+            $data['categories'] = SubCategory::with('category')->where('type', $request->get('type'))->orderBy('id', 'DESC')->paginate(12);
         }
-        
-        return view('subcategory.index',$data);
+
+        return view('subcategory.index', $data);
     }
-    
+
     public function subCategoryByCategoryId(Request $request)
     {
-        return SubCategory::where('category_id',$request->get("id"))->orderBy('id', 'DESC')->get();
+        return SubCategory::where('category_id', $request->get('id'))->orderBy('id', 'DESC')->get();
     }
-    
+
     public function filterby_type($type)
     {
-        $data['categories'] = SubCategory::with('category')->where('type',$type)->orderBy('id', 'DESC')->paginate(12);
+        $data['categories'] = SubCategory::with('category')->where('type', $type)->orderBy('id', 'DESC')->paginate(12);
         $data['type'] = $type;
-        return view("subcategory.index", $data);
+        return view('subcategory.index', $data);
     }
-    
+
     public function category_status(Request $request)
     {
         // echo("okk");
-        $festivals = SubCategory::find($request->get("id"));
-        $festivals->status = ($request->get("checked")=="true")?0:1;
+        $festivals = SubCategory::find($request->get('id'));
+        $festivals->status = $request->get('checked') == 'true' ? 0 : 1;
         $festivals->save();
-        
     }
 
     /**
@@ -73,8 +74,8 @@ class SubCategoryController extends Controller
      */
     public function create()
     {
-        $data['businessCategories'] = Category::where('type','business')->where('status','0')->orderBy('id', 'DESC')->get();
-        return view("subcategory.create",$data);
+        $data['businessCategories'] = Category::where('type', 'business')->where('status', '0')->orderBy('id', 'DESC')->get();
+        return view('subcategory.create', $data);
     }
 
     /**
@@ -86,78 +87,74 @@ class SubCategoryController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-             'image' => 'required|mimes:jpg,png,jpeg',
-             'category' => 'required',
-             'title' => 'required',
-             'type' => 'required',
+            'image' => 'required|mimes:jpg,png,jpeg',
+            'category' => 'required',
+            'title' => 'required',
+            'type' => 'required',
         ]);
-        
+
         $posts = new SubCategory();
-        $posts->name = $request->get("title");
-        $posts->type = $request->get("type");
-        $posts->category_id = $request->get("category");
+        $posts->name = $request->get('title');
+        $posts->type = $request->get('type');
+        $posts->category_id = $request->get('category');
+        $posts->owner_id = Session::get('userid');
         
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            
-            if(Setting::getValue('storage_type') == "digitalOccean"){
-                $item_url = Storage::disk('spaces')->put('uploads/posts/'.$fileName, file_get_contents($image),'public');
-                $thumbnail_url = env("DO_SPACES_URL").'/uploads/posts/'.$fileName;
-                $posts->image = $thumbnail_url;
-            }else{
-                
-                $thumbName = Str::uuid() . '.' .$extension;
-            
-                $image->move('uploads/posts', $fileName);
-                $item_url = 'uploads/posts/'.$fileName;
-              
-                if($request->get("type") == "political"){
-                  $posts->image = $item_url;
-                }else{
-                  $thumbnail_url = 'uploads/posts/'.$thumbName;
 
-                    switch($extension){ 
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $item_url = Storage::disk('spaces')->put('uploads/posts/' . $fileName, file_get_contents($image), 'public');
+                $thumbnail_url = env('DO_SPACES_URL') . '/uploads/posts/' . $fileName;
+                $posts->image = $thumbnail_url;
+            } else {
+                $thumbName = Str::uuid() . '.' . $extension;
+
+                $image->move('uploads/posts', $fileName);
+                $item_url = 'uploads/posts/' . $fileName;
+
+                if ($request->get('type') == 'political') {
+                    $posts->image = $item_url;
+                } else {
+                    $thumbnail_url = 'uploads/posts/' . $thumbName;
+
+                    switch ($extension) {
                         case 'jpeg':
-                            $image = imagecreatefromjpeg($item_url); 
-                            break; 
-                        case 'png': 
-                            $image = imagecreatefrompng($item_url); 
-                            break; 
-                        case 'gif': 
-                            $image = imagecreatefromgif($item_url); 
-                            break; 
-                        default: 
-                            $image = imagecreatefromjpeg($item_url); 
+                            $image = imagecreatefromjpeg($item_url);
+                            break;
+                        case 'png':
+                            $image = imagecreatefrompng($item_url);
+                            break;
+                        case 'gif':
+                            $image = imagecreatefromgif($item_url);
+                            break;
+                        default:
+                            $image = imagecreatefromjpeg($item_url);
                     }
 
                     imagejpeg($image, $thumbnail_url, 50);
-                   @unlink($item_url);
-                  
-                  $posts->image = $thumbnail_url;
+                    @unlink($item_url);
+
+                    $posts->image = $thumbnail_url;
                 }
-                
             }
-            
         }
-        
+
         $posts->save();
-        if($request->get("type") == "festival"){
+        if ($request->get('type') == 'festival') {
             return redirect('/festivalSubCategory');
         }
-        if($request->get("type") == "business"){
+        if ($request->get('type') == 'business') {
             return redirect('/businessSubCategory');
         }
-        if($request->get("type") == "political"){
+        if ($request->get('type') == 'political') {
             return redirect('/politicalSubCategory');
         }
-        if($request->get("type") == "custom"){
+        if ($request->get('type') == 'custom') {
             return redirect('/customSubCategory');
         }
-        
     }
 
     /**
@@ -179,9 +176,9 @@ class SubCategoryController extends Controller
      */
     public function edit($id)
     {
-        $data['businessCategories'] = Category::where('type','business')->where('status','0')->orderBy('id', 'DESC')->get();
+        $data['businessCategories'] = Category::where('type', 'business')->where('status', '0')->orderBy('id', 'DESC')->get();
         $data['category'] = SubCategory::find($id);
-        return view("subcategory.edit", $data);
+        return view('subcategory.edit', $data);
     }
 
     /**
@@ -194,71 +191,69 @@ class SubCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-             'image' => 'nullable|mimes:jpg,png,jpeg',
-             'title' => 'required',
-             'type' => 'required',
+            'image' => 'nullable|mimes:jpg,png,jpeg',
+            'title' => 'required',
+            'type' => 'required',
         ]);
-        
+
         $posts = SubCategory::find($id);
-        $posts->name = $request->get("title");
-        $posts->type = $request->get("type");
-        $posts->category_id = $request->get("category");
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+        $posts->name = $request->get('title');
+        $posts->type = $request->get('type');
+        $posts->category_id = $request->get('category');
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            
-            if(Setting::getValue('storage_type') == "digitalOccean"){
-                $item_url = Storage::disk('spaces')->put('uploads/posts/'.$fileName, file_get_contents($image),'public');
-                $thumbnail_url = env("DO_SPACES_URL").'/uploads/posts/'.$fileName;
-                $posts->image = $thumbnail_url;
-            }else{
-                
-                $thumbName = Str::uuid() . '.' .$extension;
-            
-                $image->move('uploads/posts', $fileName);
-                $item_url = 'uploads/posts/'.$fileName;
-                if($request->get("type") == "political"){
-                  $posts->image = $item_url;
-                }else{
-                  $thumbnail_url = 'uploads/posts/'.$thumbName;
 
-                    switch($extension){ 
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $item_url = Storage::disk('spaces')->put('uploads/posts/' . $fileName, file_get_contents($image), 'public');
+                $thumbnail_url = env('DO_SPACES_URL') . '/uploads/posts/' . $fileName;
+                $posts->image = $thumbnail_url;
+            } else {
+                $thumbName = Str::uuid() . '.' . $extension;
+
+                $image->move('uploads/posts', $fileName);
+                $item_url = 'uploads/posts/' . $fileName;
+                if ($request->get('type') == 'political') {
+                    $posts->image = $item_url;
+                } else {
+                    $thumbnail_url = 'uploads/posts/' . $thumbName;
+
+                    switch ($extension) {
                         case 'jpeg':
-                            $image = imagecreatefromjpeg($item_url); 
-                            break; 
-                        case 'png': 
-                            $image = imagecreatefrompng($item_url); 
-                            break; 
-                        case 'gif': 
-                            $image = imagecreatefromgif($item_url); 
-                            break; 
-                        default: 
-                            $image = imagecreatefromjpeg($item_url); 
+                            $image = imagecreatefromjpeg($item_url);
+                            break;
+                        case 'png':
+                            $image = imagecreatefrompng($item_url);
+                            break;
+                        case 'gif':
+                            $image = imagecreatefromgif($item_url);
+                            break;
+                        default:
+                            $image = imagecreatefromjpeg($item_url);
                     }
 
                     imagejpeg($image, $thumbnail_url, 50);
-                   @unlink($item_url);
-                  @unlink($posts->image);
-                  $posts->image = $thumbnail_url;
+                    @unlink($item_url);
+                    @unlink($posts->image);
+                    $posts->image = $thumbnail_url;
                 }
-                
             }
         }
-        
+
         $posts->save();
-        if($request->get("type") == "festival"){
+        if ($request->get('type') == 'festival') {
             return redirect('/festivalSubCategory');
         }
-        if($request->get("type") == "business"){
+        if ($request->get('type') == 'business') {
             return redirect('/businessSubCategory');
         }
-        if($request->get("type") == "political"){
+        if ($request->get('type') == 'political') {
             return redirect('/politicalSubCategory');
         }
-        if($request->get("type") == "custom"){
+        if ($request->get('type') == 'custom') {
             return redirect('/customSubCategory');
         }
     }
@@ -277,5 +272,4 @@ class SubCategoryController extends Controller
         SubCategory::find($id)->delete();
         return redirect()->route('subcategory.index');
     }
-    
 }

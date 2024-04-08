@@ -1,5 +1,8 @@
 @extends('main')
 
+@php
+    $is_permitted = App\Models\Admin::isPermission('category') == 'true';
+@endphp
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -13,17 +16,20 @@
                         <div class="ms-auto mt-3 d-flex">
                             <form action="{{ url('category/search') }}" method="POST" class="ms-auto me-4">
                                 @csrf
-                                <input class="form-control" placeholder="Search"
+                                <input class="form-control" {{ $is_permitted ? '' : 'disabled' }} placeholder="Search"
                                     value="@if (!empty($search)) {{ $search }} @endif" type="text"
                                     name="search">
                                 <input class="form-control" value="{{ $type }}" type="hidden" name="type">
                             </form>
-                            <a href="{{ route('subcategory.create') }}" class="btn btn-success "><i class="fas fa-plus"></i>
-                                Add Category</a>
+                            <a href="{{ route('subcategory.create') }}"
+                                class="btn btn-success {{ $is_permitted ? '' : 'disabled' }}">
+                                <i class="fas fa-plus"></i>
+                                Add Category
+                            </a>
                         </div>
                     </div>
                 </div>
-                @if (App\Models\Admin::isPermission('category') == 'true')
+                @if ($is_permitted == true)
                     <div class="card-body mt-n4">
 
                         <div class="row mb">

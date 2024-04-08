@@ -26,8 +26,7 @@ class CustomController extends Controller
     {
         if (Admin::isPermission('posts') == 'true') {
             $data['sections'] = Section::where('status', '0')->get();
-            $data['posts'] = Posts::with('section')->where('owner_id', Session::get('userid'))->
-                where('type', 'custom')->orderBy('id', 'DESC')->paginate(8);
+            $data['posts'] = Posts::with('section')->where('owner_id', Session::get('userid'))->where('type', 'custom')->orderBy('id', 'DESC')->paginate(8);
             $data['categories'] = Category::where('status', '0')->where('type', 'custom')->get();
             // echo(json_encode($data['posts']));
             // die();
@@ -142,7 +141,7 @@ class CustomController extends Controller
                 $post->orientation = $orientation;
                 $post->height = $size[1];
                 $post->width = $size[0];
-
+                $post->owner_id = Session::get('userid');
                 $post->save();
             }
         } else {
@@ -250,7 +249,7 @@ class CustomController extends Controller
                 $post->item_url = $thumbnail_url;
                 $post->thumb_url = $thumbnail_url;
             }
-
+            $post->owner_id = Session::get('userid');
             $post->save();
         }
         return redirect()->route('custom.index');

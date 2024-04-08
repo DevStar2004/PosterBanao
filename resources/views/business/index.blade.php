@@ -1,5 +1,8 @@
 @extends('main')
 
+@php
+    $is_permitted = (App\Models\Admin::isPermission('section') == 'true');
+@endphp
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -10,13 +13,16 @@
                         <h6 class="text-white">Business Posts</h6>
 
                         <div class="ms-auto mt-3">
-                            <a href="{{ route('business.create') }}" class="btn btn-success "><i class="fas fa-plus"></i> Add
-                                Post</a>
+                            <a href="{{ route('business.create') }}" 
+                                class="btn btn-success {{$is_permitted ? '' : 'disabled'}}">
+                                <i class="fas fa-plus"></i> 
+                                Add Post
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                @if (App\Models\Admin::isPermission('section') == 'true')
+                @if ($is_permitted == true)
                     <div class="d-flex align-items-center">
                         <div class="col-md-4">
                             <div class="form-group p-2">

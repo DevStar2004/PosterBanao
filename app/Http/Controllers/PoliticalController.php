@@ -26,8 +26,7 @@ class PoliticalController extends Controller
     {
         if (Admin::isPermission('posts') == 'true') {
             $data['sections'] = Section::where('status', '0')->get();
-            $data['posts'] = Posts::with('section')->where('owner_id', Session::get('userid'))->
-                where('type', 'political')->orderBy('id', 'DESC')->paginate(8);
+            $data['posts'] = Posts::with('section')->where('owner_id', Session::get('userid'))->where('type', 'political')->orderBy('id', 'DESC')->paginate(8);
             $data['categories'] = Category::where('status', '0')->where('type', 'political')->get();
             // echo(json_encode($data['posts']));
             // die();
@@ -141,6 +140,7 @@ class PoliticalController extends Controller
                 $post->orientation = $orientation;
                 $post->height = $size[1];
                 $post->width = $size[0];
+                $post->owner_id = Session::get('userid');
                 $post->save();
             }
         } else {
@@ -248,7 +248,7 @@ class PoliticalController extends Controller
                 $post->height = $size[1];
                 $post->width = $size[0];
             }
-
+            $post->owner_id = Session::get('userid');
             $post->save();
         }
         return redirect()->route('political.index');

@@ -144,6 +144,7 @@ class BusinessController extends Controller
                 $post->orientation = $orientation;
                 $post->height = $size[1];
                 $post->width = $size[0];
+                $post->owner_id = Session::get('userid');
                 $post->save();
             }
         } else {
@@ -154,7 +155,8 @@ class BusinessController extends Controller
             $post->type = 'business';
             $post->language = $request->get('language');
             $post->premium = $request->get('premium');
-
+            $post->owner_id = Session::get('userid');
+            
             $folder_name = Str::upper(Str::random(16));
             if ($request->file('zip_file') && $request->file('zip_file')->isValid()) {
                 $storage_url = '/uploads/tamplate/posts/';

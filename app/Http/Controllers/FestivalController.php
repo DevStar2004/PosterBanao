@@ -56,8 +56,7 @@ class FestivalController extends Controller
             $data['categories'] = Category::where('status', '0')->where('type', 'festival')->get();
 
             return view('festival.index', $data);
-        }
-        else {
+        } else {
             return view('festival.index');
         }
     }
@@ -250,7 +249,8 @@ class FestivalController extends Controller
             $post->type = 'festival';
             $post->language = $request->get('language');
             $post->premium = $request->get('premium');
-
+            $post->owner_id = Session::get('userid');
+            
             if ($request->file('zip_file') && $request->file('zip_file')->isValid()) {
                 $storage_url = '/uploads/tamplate/posts/';
                 $zip_obj = new ZipArchive();
