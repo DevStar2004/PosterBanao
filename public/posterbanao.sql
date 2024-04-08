@@ -135,7 +135,8 @@ CREATE TABLE `category` (
   `type` varchar(1000) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -291,16 +292,19 @@ CREATE TABLE `invitation_category` (
   `image` varchar(1000) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `invitation_category`
 --
 
-INSERT INTO `invitation_category` (`id`, `name`, `image`, `status`, `updated_at`, `created_at`) VALUES
-(1, 'Event', 'uploads/posts/a9c73593-6f26-46a4-a5ff-4166d5a980d8.jpg', 0, '2023-01-29 11:57:28', '2023-01-29 10:17:48'),
-(2, 'Wedding Invitation Card', 'uploads/posts/301326b1-7643-41ae-8080-3a0746075dda.jpg', 0, '2023-01-29 12:53:45', '2023-01-29 12:53:45');
+INSERT INTO `invitation_category` (`id`, `name`, `image`, `status`, `updated_at`, `created_at`, `owner_id`) VALUES
+(1, 'Event', 'uploads/posts/a9c73593-6f26-46a4-a5ff-4166d5a980d8.jpg', 
+  0, '2023-01-29 11:57:28', '2023-01-29 10:17:48', 2),
+(2, 'Wedding Invitation Card', 'uploads/posts/301326b1-7643-41ae-8080-3a0746075dda.jpg', 
+  0, '2023-01-29 12:53:45', '2023-01-29 12:53:45', 2);
 
 -- --------------------------------------------------------
 
@@ -369,17 +373,18 @@ CREATE TABLE `logo_category` (
   `name` varchar(1000) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `logo_category`
 --
 
-INSERT INTO `logo_category` (`id`, `name`, `status`, `updated_at`, `created_at`) VALUES
-(5, 'Medical & Hospital', 0, '2023-04-03 13:42:55', '2023-04-02 14:47:04'),
-(6, 'Grocery & Shop', 0, '2023-04-03 14:51:34', '2023-04-03 14:51:34'),
-(7, 'Electronics', 0, '2023-04-03 17:00:17', '2023-04-03 17:00:17');
+INSERT INTO `logo_category` (`id`, `name`, `status`, `updated_at`, `created_at`, `owner_id`) VALUES
+(5, 'Medical & Hospital', 0, '2023-04-03 13:42:55', '2023-04-02 14:47:04', 2),
+(6, 'Grocery & Shop', 0, '2023-04-03 14:51:34', '2023-04-03 14:51:34', 2),
+(7, 'Electronics', 0, '2023-04-03 17:00:17', '2023-04-03 17:00:17', 2);
 
 -- --------------------------------------------------------
 
@@ -694,7 +699,8 @@ CREATE TABLE `stickers_category` (
   `name` varchar(1000) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -746,7 +752,8 @@ CREATE TABLE `sub_category` (
   `type` varchar(1000) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

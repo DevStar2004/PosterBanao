@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Section;
 use App\Models\Setting;
+use App\Models\Admin;
 use Illuminate\Support\Str;
 use Session;
 
@@ -17,31 +18,34 @@ class SectionController extends Controller
      */
     public function index()
     {
-        $data['sections'] = Section::orderBy('orders', 'ASC')->paginate(150);
-        return view('section.index',$data);
+        if (Admin::isPermission('section') == 'false') {
+            return view('section.index');
+        } else {
+            $data['sections'] = Section::where('owner_id', Session::get('userid'))->orderBy('orders', 'ASC')->paginate(150);
+            return view('section.index', $data);
+        }
     }
-    
+
     public function section_status(Request $request)
     {
-        $festivals = Section::find($request->get("id"));
-        $festivals->status = ($request->get("checked")=="true")?0:1;
+        $festivals = Section::find($request->get('id'));
+        $festivals->status = $request->get('checked') == 'true' ? 0 : 1;
         $festivals->save();
-        
     }
-    
-    public function section_order(Request $request){
-        $positions = $request->get("position");
-        $ids = $request->get("parameter");
-        
-        $ids = json_decode($ids,true);
-        $positions = json_decode($positions,true);
-        
-        foreach ($ids as $key => $id){
+
+    public function section_order(Request $request)
+    {
+        $positions = $request->get('position');
+        $ids = $request->get('parameter');
+
+        $ids = json_decode($ids, true);
+        $positions = json_decode($positions, true);
+
+        foreach ($ids as $key => $id) {
             $sec = Section::find($id);
-            $sec->orders = $key+1;
+            $sec->orders = $key + 1;
             $sec->save();
         }
-        
     }
     /**
      * Show the form for creating a new resource.
@@ -50,7 +54,6 @@ class SectionController extends Controller
      */
     public function create()
     {
-        
         return view('section.create');
     }
 
@@ -63,10 +66,10 @@ class SectionController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-             'title' => 'required',
+            'title' => 'required',
         ]);
-        $sec =new Section();
-        $sec->name = $request->get("title");
+        $sec = new Section();
+        $sec->name = $request->get('title');
         $sec->owner_id = Session::get('userid');
         $sec->save();
         return redirect()->route('section.index');
@@ -91,9 +94,8 @@ class SectionController extends Controller
      */
     public function edit($id)
     {
-        
         $data['section'] = Section::find($id);
-        return view('section.edit',$data);
+        return view('section.edit', $data);
     }
 
     /**
@@ -106,10 +108,10 @@ class SectionController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-             'title' => 'required',
+            'title' => 'required',
         ]);
         $posts = Section::find($id);
-        $posts->name = $request->get("title");
+        $posts->name = $request->get('title');
         $posts->save();
         return redirect()->route('section.index');
     }
