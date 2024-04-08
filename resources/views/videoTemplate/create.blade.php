@@ -18,7 +18,7 @@
             </div>
             <div class="card-body">
                 <!--<img src="{{ asset('storage/images/test.jpg') }}">-->
-                <form method="post" action=" {{ route('videotamplate.store') }} " id="addform" enctype="multipart/form-data" >
+                <form method="post" action=" {{ route('videotemplate.store') }} " id="addform" enctype="multipart/form-data" >
                     @csrf
                     <div class="row">
                         <div class="col-md-6">

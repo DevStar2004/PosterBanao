@@ -232,7 +232,8 @@ CREATE TABLE `greeting_posts` (
   `views` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -250,7 +251,8 @@ CREATE TABLE `greeting_section` (
   `keyword` varchar(1000) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -925,7 +927,8 @@ CREATE TABLE `video` (
   `status` int(11) NOT NULL DEFAULT '0',
   `premium` int(11) NOT NULL DEFAULT '0' COMMENT '1=premium',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -934,7 +937,7 @@ CREATE TABLE `video` (
 -- Table structure for table `video_tamplate`
 --
 
-CREATE TABLE `video_tamplate` (
+CREATE TABLE `video_template` (
   `id` int(11) NOT NULL,
   `title` varchar(1400) NOT NULL,
   `thumb_url` varchar(10000) NOT NULL,
@@ -947,7 +950,8 @@ CREATE TABLE `video_tamplate` (
   `status` int(11) NOT NULL DEFAULT '0',
   `premium` int(11) NOT NULL DEFAULT '0' COMMENT '1=premium',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -956,14 +960,15 @@ CREATE TABLE `video_tamplate` (
 -- Table structure for table `video_tamplate_category`
 --
 
-CREATE TABLE `video_tamplate_category` (
+CREATE TABLE `video_template_category` (
   `id` int(11) NOT NULL,
   `name` varchar(140) DEFAULT NULL,
   `image` varchar(1000) DEFAULT NULL,
   `orders` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

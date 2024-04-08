@@ -3,18 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Admin;
+use App\Models\VideoTemplate;
+use App\Models\VideoTemplateCategory;
 use App\Models\Setting;
-use App\Models\Video;
-use App\Models\Category;
 use App\Models\Language;
-use App\Models\SubCategory;
-use App\Models\Section;
+use App\Models\Admin;
 use Illuminate\Support\Str;
-use Storage;
 use Session;
-
-class VideoController extends Controller
+class VideoTemplateController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,41 +20,32 @@ class VideoController extends Controller
     public function index()
     {
         if (Admin::isPermission('video')) {
-            $data['sections'] = Section::where('status', '0')->get();
-            $data['posts'] = Video::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
-            // echo(json_encode($data['posts']));
-            // die();
-            return view('video.index', $data);
-        } else return view('video.index');
+            $data['posts'] = VideoTemplate::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            return view('videoTemplate.index', $data);
+        } else {
+            return view('videoTemplate.index');
+        }
     }
 
     public function filterby_type($type)
     {
-        $data['sections'] = Section::where('status', '0')->get();
-        $data['posts'] = Video::where('type', $type)->orderBy('id', 'DESC')->paginate(12);
+        $data['posts'] = VideoTemplate::where('type', $type)->orderBy('id', 'DESC')->paginate(12);
         $data['type'] = $type;
 
-        return view('video.index', $data);
+        return view('videoTemplate.index', $data);
     }
 
     public function video_status(Request $request)
     {
         // echo("okk");
-        $festivals = Video::find($request->get('id'));
+        $festivals = VideoTemplate::find($request->get('id'));
         $festivals->status = $request->get('checked') == 'true' ? 0 : 1;
         $festivals->save();
     }
 
-    public function video_remove_section(Request $request)
+    public function premium_action(Request $request)
     {
-        $festivals = Video::find($request->get('id'));
-        $festivals->section_id = 0;
-        $festivals->save();
-    }
-
-    public function video_premium_action(Request $request)
-    {
-        $festivals = Video::find($request->get('id'));
+        $festivals = VideoTemplate::find($request->get('id'));
         $festivals->premium = $request->get('type');
         $festivals->save();
     }
@@ -69,7 +56,7 @@ class VideoController extends Controller
         if ($request->posts_ids != null) {
             if ($request->action_type == 'enable') {
                 foreach ($ids as $id) {
-                    $posts = Video::find($id);
+                    $posts = VideoTemplate::find($id);
                     $posts->status = 0;
                     $posts->save();
                 }
@@ -77,7 +64,7 @@ class VideoController extends Controller
 
             if ($request->action_type == 'disable') {
                 foreach ($ids as $id) {
-                    $posts = Video::find($id);
+                    $posts = VideoTemplate::find($id);
                     $posts->status = 1;
                     $posts->save();
                 }
@@ -85,22 +72,14 @@ class VideoController extends Controller
 
             if ($request->action_type == 'delete') {
                 foreach ($ids as $id) {
-                    $posts = Video::find($id);
-                    @unlink($posts->item_url);
-                    @unlink($posts->thumb_url);
-                    Video::find($id)->delete();
-                }
-            }
-
-            if ($request->action_type == 'section') {
-                foreach ($ids as $id) {
-                    $posts = Video::find($id);
-                    $posts->section_id = $request->section_id;
-                    $posts->save();
+                    $posts = VideoTemplate::find($id);
+                    @unlink($posts->video_url);
+                    @unlink($posts->zip_url);
+                    VideoTemplate::find($id)->delete();
                 }
             }
         }
-        return redirect()->route('video.index');
+        return redirect()->route('videotemplate.index');
     }
 
     /**
@@ -111,13 +90,9 @@ class VideoController extends Controller
     public function create()
     {
         $data['languages'] = Language::where('status', '0')->get();
+        $data['categories'] = VideoTemplateCategory::where('status', '0')->get();
 
-        $data['festivals'] = Category::where('status', '0')->where('type', 'festival')->get();
-        $data['custom'] = Category::where('status', '0')->where('type', 'custom')->get();
-
-        // echo(json_encode($data['posts']));
-        // die();
-        return view('video.create', $data);
+        return view('videoTemplate.create', $data);
     }
 
     /**
@@ -130,11 +105,18 @@ class VideoController extends Controller
     {
         $validatedData = $request->validate([
             'video' => 'required|mimes:mp4,ogx,oga,ogv,ogg,webm|max:30720',
+            'zip' => 'required',
             'title' => 'required',
             'type' => 'required',
             'category' => 'required',
             'language' => 'required',
         ]);
+
+        $video = new VideoTemplate();
+        $video->title = $request->get('title');
+        $video->category_id = $request->get('category');
+        $video->type = $request->get('type');
+        $video->language = $request->get('language');
 
         if ($request->file('video') && $request->file('video')->isValid()) {
             $videof = $request->file('video');
@@ -150,18 +132,27 @@ class VideoController extends Controller
                 $item_url = 'uploads/video/' . $fileName;
             }
 
-            $id = Video::create([
-                'title' => $request->get('title'),
-                'category_id' => $request->get('category'),
-                'sub_category_id' => $request->get('subcategory'),
-                'item_url' => $item_url,
-                'thumb_url' => $item_url,
-                'type' => $request->get('type'),
-                'language' => $request->get('language'),
-                'owner_id' => Session::get('userid')
-            ]);
+            $video->thumb_url = $item_url;
+            $video->video_url = $item_url;
         }
-        return redirect()->route('video.index');
+        if ($request->file('zip') && $request->file('zip')->isValid()) {
+            $zip = $request->file('zip');
+
+            $extension = $zip->getClientOriginalExtension();
+            $fileName = Str::uuid() . '.' . $extension;
+
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $zip_url = Storage::disk('spaces')->put('uploads/videoTemplate/' . $fileName, file_get_contents($zip), 'public');
+                $zip_url = env('DO_SPACES_URL') . '/uploads/videoTemplate/' . $fileName;
+            } else {
+                $zip->move('uploads/videoTemplate', $fileName);
+                $zip_url = 'uploads/videoTemplate/' . $fileName;
+            }
+            $video->zip_url = $zip_url;
+        }
+        $video->owner_id = Session::get('userid');
+        $video->save();
+        return redirect()->route('videotemplate.index');
     }
 
     /**
@@ -183,19 +174,10 @@ class VideoController extends Controller
      */
     public function edit($id)
     {
+        $data['video'] = VideoTemplate::find($id);
         $data['languages'] = Language::where('status', '0')->get();
-        $data['video'] = video::find($id);
-        $data['categories'] = Category::where('status', '0')
-            ->where('type', $data['video']['type'])
-            ->get();
-        $data['subcategories'] = SubCategory::where('status', '0')
-            ->where('category_id', $data['video']['category_id'])
-            ->where('type', $data['video']['type'])
-            ->get();
-
-        // echo(json_encode($data['posts']));
-        // die();
-        return view('video.edit', $data);
+        $data['categories'] = VideoTemplateCategory::where('status', '0')->get();
+        return view('videoTemplate.edit', $data);
     }
 
     /**
@@ -208,17 +190,15 @@ class VideoController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'video' => 'nullable|mimes:mp4,ogx,oga,ogv,ogg,webm|max:30720',
             'title' => 'required',
             'type' => 'required',
             'category' => 'required',
             'language' => 'required',
         ]);
 
-        $video = Video::find($id);
+        $video = VideoTemplate::find($id);
         $video->title = $request->get('title');
         $video->category_id = $request->get('category');
-        $video->sub_category_id = $request->get('subcategory');
         $video->type = $request->get('type');
         $video->language = $request->get('language');
 
@@ -234,15 +214,29 @@ class VideoController extends Controller
             } else {
                 $videof->move('uploads/video', $fileName);
                 $item_url = 'uploads/video/' . $fileName;
-                @unlink($video->item_url);
+                @unlink($video->video_url);
             }
-
-            $video->item_url = $item_url;
-            $video->thumb_url = $video->item_url;
+            $video->thumb_url = $item_url;
+            $video->video_url = $item_url;
         }
+        if ($request->file('zip') && $request->file('zip')->isValid()) {
+            $zip = $request->file('zip');
 
+            $extension = $zip->getClientOriginalExtension();
+            $fileName = Str::uuid() . '.' . $extension;
+
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $zip_url = Storage::disk('spaces')->put('uploads/videoTemplate/' . $fileName, file_get_contents($zip), 'public');
+                $zip_url = env('DO_SPACES_URL') . '/uploads/videoTemplate/' . $fileName;
+            } else {
+                $zip->move('uploads/videoTemplate', $fileName);
+                $zip_url = 'uploads/videoTemplate/' . $fileName;
+            }
+            @unlink($video->zip_url);
+            $video->zip_url = $zip_url;
+        }
         $video->save();
-        return redirect()->route('video.index');
+        return redirect()->route('videotemplate.index');
     }
 
     /**
@@ -253,11 +247,11 @@ class VideoController extends Controller
      */
     public function destroy($id)
     {
-        $posts = Video::find($id);
-        @unlink($posts->item_url);
-        // unlink($posts->thumb_url);
+        $posts = videoTemplate::find($id);
+        @unlink($posts->video_url);
+        @unlink($posts->zip_url);
 
-        Video::find($id)->delete();
-        return redirect()->route('video.index');
+        videoTemplate::find($id)->delete();
+        return redirect()->route('videotemplate.index');
     }
 }

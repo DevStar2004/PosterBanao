@@ -37,8 +37,8 @@ use App\Http\Controllers\PoliticalController;
 use App\Http\Controllers\MusicCategoryController;
 use App\Http\Controllers\MusicController;
 use App\Models\Setting;
-use App\Http\Controllers\VideoTamplateCategoryController;
-use App\Http\Controllers\VideoTamplateController;
+use App\Http\Controllers\VideoTemplateCategoryController;
+use App\Http\Controllers\VideoTemplateController;
 use App\Http\Controllers\WhatsappMessageController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\PaymentController;
@@ -46,7 +46,7 @@ use App\Http\Controllers\LogosController;
 use App\Http\Controllers\LogoCategoryController;
 use App\Http\Controllers\BackgroundController;
 
-use App\Models\VideoTamplateCategory;
+use App\Models\VideoTemplateCategory;
 use App\Models\Section;
 /*
 /*
@@ -179,17 +179,17 @@ Route::group(['middleware' => "web"],function(){
     Route::post('logocategory-status', [LogoCategoryController::class,'logocategory_status']);
     
     //Video Tamplate
-    Route::resource('videotamplate', VideoTamplateController::class);
-    Route::post('video-tamplate-status', [VideoTamplateController::class,'video_status']);
-    Route::post('video-tamplate-action', [VideoTamplateController::class,'video_action']);
-    Route::post('video-tamplate-premium-action', [VideoTamplateController::class,'premium_action']);
+    Route::resource('videotemplate', VideoTemplateController::class);
+    Route::post('video-template-status', [VideoTemplateController::class,'video_status']);
+    Route::post('video-template-action', [VideoTemplateController::class,'video_action']);
+    Route::post('video-template-premium-action', [VideoTemplateController::class,'premium_action']);
     
-    Route::get('videotamplatebytype/{type}', [VideoTamplateController::class,'filterby_type']);
+    Route::get('videotemplatebytype/{type}', [VideoTemplateController::class,'filterby_type']);
     
     //Video Tamplate Category
-    Route::resource('videotamplatecategory', VideoTamplateCategoryController::class);
-    Route::post('videotamplatecategory-status', [VideoTamplateCategoryController::class,'tamplate_status']);
-    Route::post('videotamplatecategory-premium-action', [VideoTamplateCategoryController::class,'Tamplate_premium_action']);
+    Route::resource('videotemplatecategory', VideoTemplateCategoryController::class);
+    Route::post('videotemplatecategory-status', [VideoTemplateCategoryController::class,'template_status']);
+    Route::post('videotemplatecategory-premium-action', [VideoTemplateCategoryController::class,'Tamplate_premium_action']);
     
     //Business Card Tamplate
     Route::resource('businesscardtamplate', BusinessCardTamplateController::class);
@@ -303,7 +303,7 @@ Route::group(['middleware' => "web"],function(){
         //         $query->inRandomOrder()->limit(7);
         //     }))->where('status','0')->orderBy('orders',"ASC")->get();
             
-        $out['video_tamplate_category'] = VideoTamplateCategory::with(array('videos'=>function($query){
+        $out['video_template_category'] = VideoTemplateCategory::with(array('videos'=>function($query){
                  $query->inRandomOrder()->limit(1);
             }))->where('status','0')->orderBy('orders',"ASC")->get();
         return response()->json($out);

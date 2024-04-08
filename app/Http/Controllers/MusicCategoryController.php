@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\MusicCategory;
 use App\Models\Music;
 use Illuminate\Support\Str;
+
+use Session;
 
 class MusicCategoryController extends Controller
 {
@@ -16,31 +19,34 @@ class MusicCategoryController extends Controller
      */
     public function index()
     {
-        $data['categories'] = MusicCategory::orderBy('orders', 'ASC')->paginate(150);
-        return view('music.category.index',$data);
+        if (Admin::isPermission('video')) {
+            $data['categories'] = MusicCategory::where('owner_id', Session::get('userid'))->orderBy('orders', 'ASC')->paginate(150);
+            return view('music.category.index', $data);
+        } else {
+            return view('music.category.index');
+        }
     }
-    
+
     public function category_status(Request $request)
     {
-        $festivals = MusicCategory::find($request->get("id"));
-        $festivals->status = ($request->get("checked")=="true")?0:1;
+        $festivals = MusicCategory::find($request->get('id'));
+        $festivals->status = $request->get('checked') == 'true' ? 0 : 1;
         $festivals->save();
-        
     }
-    
-    public function category_order(Request $request){
-        $positions = $request->get("position");
-        $ids = $request->get("parameter");
-        
-        $ids = json_decode($ids,true);
-        $positions = json_decode($positions,true);
-        
-        foreach ($ids as $key => $id){
+
+    public function category_order(Request $request)
+    {
+        $positions = $request->get('position');
+        $ids = $request->get('parameter');
+
+        $ids = json_decode($ids, true);
+        $positions = json_decode($positions, true);
+
+        foreach ($ids as $key => $id) {
             $sec = MusicCategory::find($id);
-            $sec->orders = $key+1;
+            $sec->orders = $key + 1;
             $sec->save();
         }
-        
     }
     /**
      * Show the form for creating a new resource.
@@ -61,10 +67,11 @@ class MusicCategoryController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-             'title' => 'required',
+            'title' => 'required',
         ]);
-        $sec =new MusicCategory();
-        $sec->name = $request->get("title");
+        $sec = new MusicCategory();
+        $sec->name = $request->get('title');
+        $sec->owner_id = Session::get('userid');
         $sec->save();
         return redirect()->route('musiccategory.index');
     }
@@ -86,11 +93,11 @@ class MusicCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-     
+
     public function edit($id)
     {
         $data['category'] = MusicCategory::find($id);
-        return view('music.category.edit',$data);
+        return view('music.category.edit', $data);
     }
 
     /**
@@ -103,10 +110,10 @@ class MusicCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-             'title' => 'required',
+            'title' => 'required',
         ]);
         $posts = MusicCategory::find($id);
-        $posts->name = $request->get("title");
+        $posts->name = $request->get('title');
         $posts->save();
         return redirect()->route('musiccategory.index');
     }

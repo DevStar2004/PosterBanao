@@ -1,7 +1,7 @@
 @extends('main')
 
 @php
-    $is_permitted = App\Models\Admin::isPermission('greeting') == 'true';
+    $is_permitted = App\Models\Admin::isPermission('video') == 'true';
 @endphp
 
 @section('content')
@@ -11,32 +11,31 @@
 
                 <div class="card-header py-0 bg-primary">
                     <div class="d-flex align-items-center">
-                        <h6 class="text-white">Greeting Posts</h6>
+                        <h6 class="text-white">Video Tamplates</h6>
 
                         <div class="ms-auto mt-3">
-                            <a href="{{ route('greeting.create') }}"
+                            <a href="{{ route('videotemplate.create') }}"
                                 class="btn btn-success {{ $is_permitted ? '' : 'disabled' }}">
                                 <i class="fas fa-plus"></i>
-                                Add Post
+                                Add New
                             </a>
                         </div>
                     </div>
                 </div>
+
                 @if ($is_permitted == true)
                     <div class="d-flex align-items-center">
                         <div class="col-md-4">
                             <div class="form-group p-2">
-                                <select class="form-control selectpicker" onchange="searchBySectionID()" id="section">
-                                    @if (empty($section))
-                                        <option selected="selected" disabled="disabled">Select Section</option>
-                                    @else
-                                        <option disabled="disabled">Show All</option>
-                                    @endif
-                                    @foreach ($sections as $c)
-                                        <option value="{{ $c->id }}"
-                                            @if (!empty($section) && $c->name == $section) selected @endif>
-                                            {{ $c->name }}</a></option>
-                                    @endforeach
+                                <select class="form-control selectpicker" onchange="searchByType()" id="category">
+                                    <option selected>All</option>
+                                    <option @if (!empty($type) && $type == 'festival') selected @endif value="festival">Festival
+                                    </option>
+                                    <option @if (!empty($type) && $type == 'business') selected @endif value="business">Business
+                                    </option>
+                                    <option @if (!empty($type) && $type == 'political') selected @endif value="business">political
+                                    </option>
+                                    <option @if (!empty($type) && $type == 'custom') selected @endif value="custom">Custom</option>
                                 </select>
 
                             </div>
@@ -51,6 +50,7 @@
                                     data-toggle="dropdown">
                                     Action &nbsp;&nbsp; <i class="fas fa-angle-down"></i></button>
                                 <ul class="dropdown-menu" style="right:0;left:auto;">
+                                    <!--<li><a class="dropdown-item" href="#" data-type="enable" data-toggle="modal" data-target="#sectionModal">Add To Section</a></li>-->
                                     <li><a class="dropdown-item" href="#" data-type="enable" data-toggle="modal"
                                             data-target="#enableModal">Enable</a></li>
                                     <li><a class="dropdown-item" href="#" data-type="enable" data-toggle="modal"
@@ -58,8 +58,9 @@
                                     <li><a class="dropdown-item" href="#" data-type="enable" data-toggle="modal"
                                             data-target="#deleteModal">Delete</a></li>
                                 </ul>
-                                <form action="{{ url('/greeting-action') }}" method="POST" id="form-select-one">
+                                <form action="{{ url('/video-template-action') }}" method="POST" id="form-select-one">
                                     @csrf
+                                    <input type="hidden" name="section_id" value="">
                                     <input type="hidden" name="posts_ids" value="">
                                     <input type="hidden" name="action_type" value="">
                                 </form>
@@ -72,72 +73,84 @@
 
                         <div class="row mb">
                             @foreach ($posts as $post)
-                                <div class="col-xl-3 col-l-3 col-sm-4 p-2  bg-transparent">
+                                <div class="col-lg-3 col-sm-6 col-xs-12 p-2  bg-transparent">
 
-                                    <div style="background-image: url(@if ($post->thumb_url) {{ url($post->thumb_url) }} @else {{ url('/images/placeholder.jpg') }} @endif);height:240px;background-size: cover;"
-                                        class="border-radius-xl">
+                                    <div style="height:350px;background-size: cover;" class="border-radius-xl">
 
-                                        <div
-                                            style="background-image: linear-gradient(transparent, transparent, transparent, transparent, transparent, #302d2d, black);border-radius: 17px;"class="card-body position-relative z-index-1 p-3">
-                                            <div
-                                                style="width: 100%;height: 56px;position: absolute;left: 0;border-radius: 16px 16px 0 0px;top: 0;background-color: rgb(12 12 12 / 17%);z-index: -1;">
-                                            </div>
-                                            <input type="checkbox" name="post_ids[]" value="{{ $post->id }}"
-                                                class="post_ids p-2" style="float: right;width: 18px;height: 18px;">
+                                        <div class="position-absolute">
+
+                                            <video class="border-radius-xl position-absolute" width="100%" height="300px"
+                                                preload="metadata" style="background:gray;object-fit: cover;">
+                                                <source src="{{ asset($post->video_url) }}#t=6">
+                                            </video>
 
 
-
-                                            <h5 class="text-white text-sm mt-0 pb-0">{{ $post->title }}</h5>
-
-                                            <div class="mt-9">
-
-                                                <div class="d-flex mt-2">
-                                                    <div>
-                                                        <a class="btn btn-icon-only btn-rounded btn-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
-                                                            href="{{ secure_url('/greeting/' . $post->id . '/edit') }}">
-                                                            <i class="fas fa-pencil-alt"></i>
-                                                        </a>
-                                                    </div>
-
-                                                    <div>
-                                                        <button
-                                                            class="btn btn-icon-only btn-rounded btn-danger mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
-                                                            data-id="{{ $post->id }}" data-toggle="modal"
-                                                            data-target="#singleDeleteModal">
-                                                            <i class="far fa-trash-alt"></i>
-                                                        </button>
-                                                    </div>
-
-
-                                                    <div class="form-switch align-items-center justify-content-center">
-                                                        <input class="form-check-input status-switch" type="checkbox"
-                                                            data-id="{{ $post->id }}"
-                                                            @if ($post->status == 0) checked @endif>
-                                                    </div>
-
-                                                    <div onclick="cheakPremium({{ $post->id }})"
-                                                        class="align-items-center justify-content-center">
-                                                        <button class="btn btn-sm btn-premium btn_cust"
-                                                            style="width:60px;padding:2px;margin:2px"
-                                                            id="pre-{{ $post->id }}">
-                                                            @if ($post->premium == 0)
-                                                                Free
-                                                            @else
-                                                                Premium
-                                                            @endif
-                                                        </button>
-                                                    </div>
-
+                                            <div style="background-image: linear-gradient(transparent, transparent, transparent, transparent, transparent, #302d2d, black);border-radius: 17px;"
+                                                class="card-body position-relative z-index-1 p-3">
+                                                <div
+                                                    style="width: 100%;height: 56px;position: absolute;left: 0;border-radius: 16px 16px 0 0px;top: 0;background-color: rgb(12 12 12 / 17%);z-index: -1;">
                                                 </div>
+                                                <input type="checkbox" name="post_ids[]" value="{{ $post->id }}"
+                                                    class="post_ids p-2" style="float: right;width: 18px;height: 18px;">
 
-                                                <form action="{{ url('greeting/' . $post->id) }}" method="POST"
-                                                    id="form-{{ $post->id }}">
-                                                    @method('DELETE')
-                                                    @csrf
-                                                    <input type="hidden" name="id" value="{{ $post->id }}">
-                                                </form>
+
+
+                                                <h5 class="text-white text-sm mt-0 pb-0">{{ $post->title }}</h5>
+
+                                                <div class="mt-12">
+
+                                                    <div class="d-flex mt-2">
+                                                        <div>
+                                                            <a class="btn btn-icon-only btn-rounded btn-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
+                                                                href="{{ secure_url('/videotemplate/' . $post->id . '/edit') }}">
+                                                                <i class="fas fa-pencil-alt"></i>
+                                                            </a>
+                                                        </div>
+
+                                                        <div>
+                                                            <button
+                                                                class="btn btn-icon-only btn-rounded btn-danger mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
+                                                                data-id="{{ $post->id }}" data-toggle="modal"
+                                                                data-target="#singleDeleteModal">
+                                                                <i class="far fa-trash-alt"></i>
+                                                            </button>
+                                                        </div>
+
+
+                                                        <div class="form-switch align-items-center justify-content-center">
+                                                            <input class="form-check-input status-switch" type="checkbox"
+                                                                data-id="{{ $post->id }}"
+                                                                @if ($post->status == 0) checked @endif>
+                                                        </div>
+
+                                                        <div onclick="cheakPremium({{ $post->id }})"
+                                                            class="align-items-center justify-content-center">
+                                                            <button class="btn btn-sm btn-premium btn_cust"
+                                                                style="width:60px;padding:2px;margin:2px"
+                                                                id="pre-{{ $post->id }}">
+                                                                @if ($post->premium == 0)
+                                                                    Free
+                                                                @else
+                                                                    Premium
+                                                                @endif
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <form action="{{ url('videotemplate/' . $post->id) }}" method="POST"
+                                                        id="form-{{ $post->id }}">
+                                                        @method('DELETE')
+                                                        @csrf
+                                                        <input type="hidden" name="id"
+                                                            value="{{ $post->id }}">
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
+
+
+
                                     </div>
 
                                 </div>
@@ -241,12 +254,12 @@
     </div>
 
     <script>
-        function searchBySectionID() {
-            var id = document.getElementById("section").value;
-            if (id == "Show All") {
-                window.location.replace("{{ url('/greeting') }}");
-            } else if (id != "Select Section") {
-                window.location.replace("{{ url('/greetingSection') }}" + "/" + id);
+        function searchByType() {
+            var id = document.getElementById("category").value;
+            if (id == "All") {
+                window.location.replace("{{ url('/videotemplate') }}");
+            } else {
+                window.location.replace("{{ url('/videotemplatebytype') }}" + "/" + id);
             }
         }
 
@@ -261,7 +274,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: "{{ secure_url('/greeting-premium-action') }}",
+                url: "{{ secure_url('/video-template-premium-action') }}",
                 data: {
                     id: id,
                     type: cheak
@@ -344,7 +357,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{ secure_url('/greeting-status') }}",
+                url: "{{ secure_url('/video-template-status') }}",
                 data: {
                     checked: checked,
                     id: id

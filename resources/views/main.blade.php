@@ -271,7 +271,7 @@
 
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#videoTamplateExamples"
-                        class="nav-link {{ Request::path() == 'videotamplate' || Request::path() == 'videotamplatecategory' ? 'active' : '' }}"
+                        class="nav-link {{ Request::path() == 'videotemplate' || Request::path() == 'videotemplatecategory' ? 'active' : '' }}"
                         aria-controls="videoTamplateExamples" role="button" aria-expanded="false">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -279,17 +279,17 @@
                         </div>
                         <span class="nav-link-text ms-1">Video Tamplates</span>
                     </a>
-                    <div class="collapse {{ Request::path() == 'videotamplate' || Request::path() == 'videotamplatecategory' ? 'show' : '' }}"
+                    <div class="collapse {{ Request::path() == 'videotemplate' || Request::path() == 'videotemplatecategory' ? 'show' : '' }}"
                         id="videoTamplateExamples">
                         <ul class="nav ms-4">
-                            <li class="nav-item {{ Request::path() == 'videotamplate' ? 'active' : '' }}">
-                                <a class="nav-link " href="{{ url('/videotamplate') }}">
+                            <li class="nav-item {{ Request::path() == 'videotemplate' ? 'active' : '' }}">
+                                <a class="nav-link " href="{{ url('/videotemplate') }}">
                                     <span class="sidenav-mini-icon"> L </span>
                                     <span class="sidenav-normal">Tamplates</span>
                                 </a>
                             </li>
-                            <li class="nav-item {{ Request::path() == 'videotamplatecategory' ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ url('/videotamplatecategory') }}">
+                            <li class="nav-item {{ Request::path() == 'videotemplatecategory' ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ url('/videotemplatecategory') }}">
                                     <span class="sidenav-mini-icon"> D </span>
                                     <span class="sidenav-normal">Categories</span>
                                 </a>
@@ -424,20 +424,20 @@
 
 
                 <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#businesscardtamplate"
-                        class="nav-link {{ Request::path() == 'businesscardtamplate' || Request::path() == 'businesscarddigital' ? 'active' : '' }}"
-                        aria-controls="businesscardtamplate" role="button" aria-expanded="false">
+                    <a data-bs-toggle="collapse" href="#businesscardtemplate"
+                        class="nav-link {{ Request::path() == 'businesscardtemplate' || Request::path() == 'businesscarddigital' ? 'active' : '' }}"
+                        aria-controls="businesscardtemplate" role="button" aria-expanded="false">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa fa-address-card text-primary text-sm opacity-10"></i>
                         </div>
                         <span class="nav-link-text ms-1">Business Card</span>
                     </a>
-                    <div class="collapse {{ Request::path() == 'businesscardtamplate' || Request::path() == 'businesscarddigital' ? 'show' : '' }}"
-                        id="businesscardtamplate">
+                    <div class="collapse {{ Request::path() == 'businesscardtemplate' || Request::path() == 'businesscarddigital' ? 'show' : '' }}"
+                        id="businesscardtemplate">
                         <ul class="nav ms-4">
-                            <li class="nav-item {{ Request::path() == 'businesscardtamplate' ? 'active' : '' }}">
-                                <a class="nav-link " href="{{ url('/businesscardtamplate') }}">
+                            <li class="nav-item {{ Request::path() == 'businesscardtemplate' ? 'active' : '' }}">
+                                <a class="nav-link " href="{{ url('/businesscardtemplate') }}">
                                     <span class="sidenav-mini-icon"> L </span>
                                     <span class="sidenav-normal">Visiting Card</span>
                                 </a>
@@ -454,9 +454,9 @@
                 </li>
 
                 <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#invitationcardtamplate"
+                    <a data-bs-toggle="collapse" href="#invitationcardtemplate"
                         class="nav-link {{ Request::path() == 'invitationcard' || Request::path() == 'invitationcategory' ? 'active' : '' }}"
-                        aria-controls="invitationcardtamplate" role="button" aria-expanded="false">
+                        aria-controls="invitationcardtemplate" role="button" aria-expanded="false">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa fa-glass-cheers text-primary text-sm opacity-10"></i>
@@ -464,7 +464,7 @@
                         <span class="nav-link-text ms-1">Custom Tamplate</span>
                     </a>
                     <div class="collapse {{ Request::path() == 'invitationcard' || Request::path() == 'invitationcategory' ? 'show' : '' }}"
-                        id="invitationcardtamplate">
+                        id="invitationcardtemplate">
                         <ul class="nav ms-4">
                             <li class="nav-item {{ Request::path() == 'invitationcard' ? 'active' : '' }}">
                                 <a class="nav-link " href="{{ url('/invitationcard') }}">
@@ -487,7 +487,7 @@
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#ourservices"
                         class="nav-link {{ Request::path() == 'ourservices' || Request::path() == 'inquiries' ? 'active' : '' }}"
-                        aria-controls="businesscardtamplate" role="button" aria-expanded="false">
+                        aria-controls="businesscardtemplate" role="button" aria-expanded="false">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa fa-store text-primary text-sm opacity-10"></i>
