@@ -153,7 +153,8 @@ CREATE TABLE `contact` (
   `message` varchar(10000) NOT NULL,
   `type` varchar(1000) DEFAULT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -442,7 +443,8 @@ CREATE TABLE `notifications` (
   `action_item` varchar(1000) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -458,7 +460,8 @@ CREATE TABLE `offer_dialog` (
   `action_item` varchar(1000) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -667,7 +670,8 @@ CREATE TABLE `slider` (
   `slider` int(11) DEFAULT '1',
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -732,17 +736,18 @@ CREATE TABLE `subscription` (
   `purchase` varchar(100) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `subscription`
 --
 
-INSERT INTO `subscription` (`id`, `name`, `type`, `value`, `price`, `discount_price`, `image`, `details`, `posts_limit`, `business_limit`, `political_limit`, `purchase`, `status`, `updated_at`, `created_at`) VALUES
-(1, 'Business', 'YEAR', 1, 999, 899, 'uploads/posts/e619170b-70e7-408d-b22e-5cda3a620159.jfif', '[\"Make +1000 Premium Posts \\ud83d\\udc8e\",\"Remove Watermark \\ud83d\\udca6\",\"Add Up to 50 Business \\ud83c\\udfe2\",\"No Ads \\ud83d\\udc1b\",\"High Quality Posts \\ud83c\\udf80\",\"Unlimited Stickers \\ud83c\\udf83\"]', 1000, 50, 10, NULL, 0, '2023-02-25 13:59:00', '2022-11-23 20:10:13'),
-(2, 'Silver', 'MONTH', 1, 365, 300, 'uploads/thumbnail/ecbe6c1d-d155-44e8-ae1a-b0479eb9f734.png', '[\"Make +300 Premium Posts \\ud83d\\udc8e\",\"Remove Watermark \\ud83d\\udca6\",\"Add Up to 10 Business \\ud83c\\udfe2\",\"No Ads \\ud83d\\udc1b\",\"High Quality Posts \\ud83c\\udf80\",\"Unlimited Stickers \\ud83c\\udf83\"]', 300, 10, 2, NULL, 0, '2023-02-26 05:06:13', '2022-11-23 20:10:47'),
-(4, 'Starter', 'WEEK', 3, 15, 5, 'uploads/posts/9d631917-ae85-48f1-99ad-d74b0346239b.png', '[\"Make 10 Premium Posts \\ud83d\\udc8e\",\"Remove Watermark \\ud83d\\udca6\",\"Add Up to 5 Business \\ud83c\\udfe2\",\"+10 Premium Posts Save \\ud83d\\udcc1\",\"High Quality Posts \\ud83c\\udf80\",\"Unlimited Stickers \\ud83c\\udf83\",\"No Ads \\ud83d\\udc1b\"]', 10, 5, 2, 'test', 0, '2023-02-26 05:05:57', '2022-12-21 06:01:29');
+INSERT INTO `subscription` (`id`, `name`, `type`, `value`, `price`, `discount_price`, `image`, `details`, `posts_limit`, `business_limit`, `political_limit`, `purchase`, `status`, `updated_at`, `created_at`, `owner_id`) VALUES
+(1, 'Business', 'YEAR', 1, 999, 899, 'uploads/posts/e619170b-70e7-408d-b22e-5cda3a620159.jfif', '[\"Make +1000 Premium Posts \\ud83d\\udc8e\",\"Remove Watermark \\ud83d\\udca6\",\"Add Up to 50 Business \\ud83c\\udfe2\",\"No Ads \\ud83d\\udc1b\",\"High Quality Posts \\ud83c\\udf80\",\"Unlimited Stickers \\ud83c\\udf83\"]', 1000, 50, 10, NULL, 0, '2023-02-25 13:59:00', '2022-11-23 20:10:13', 2),
+(2, 'Silver', 'MONTH', 1, 365, 300, 'uploads/thumbnail/ecbe6c1d-d155-44e8-ae1a-b0479eb9f734.png', '[\"Make +300 Premium Posts \\ud83d\\udc8e\",\"Remove Watermark \\ud83d\\udca6\",\"Add Up to 10 Business \\ud83c\\udfe2\",\"No Ads \\ud83d\\udc1b\",\"High Quality Posts \\ud83c\\udf80\",\"Unlimited Stickers \\ud83c\\udf83\"]', 300, 10, 2, NULL, 0, '2023-02-26 05:06:13', '2022-11-23 20:10:47', 2),
+(4, 'Starter', 'WEEK', 3, 15, 5, 'uploads/posts/9d631917-ae85-48f1-99ad-d74b0346239b.png', '[\"Make 10 Premium Posts \\ud83d\\udc8e\",\"Remove Watermark \\ud83d\\udca6\",\"Add Up to 5 Business \\ud83c\\udfe2\",\"+10 Premium Posts Save \\ud83d\\udcc1\",\"High Quality Posts \\ud83c\\udf80\",\"Unlimited Stickers \\ud83c\\udf83\",\"No Ads \\ud83d\\udc1b\"]', 10, 5, 2, 'test', 0, '2023-02-26 05:05:57', '2022-12-21 06:01:29', 2);
 
 -- --------------------------------------------------------
 

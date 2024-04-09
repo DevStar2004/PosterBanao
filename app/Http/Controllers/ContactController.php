@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Contact;
 use App\Models\Setting;
+use Session;
 
 class ContactController extends Controller
 {
@@ -15,10 +17,15 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $data['contacts'] = Contact::with('user')->orderBy('id','DESC')->paginate(12);
-        
-        // echo(json_encode($data['contacts']));
-        return view('contact.index',$data);
+        if (Admin::isPermission('contacts')) {
+            $data['contacts'] = Contact::with('user')->where('owner_id', Session::get('userid'))->
+                orderBy('id', 'DESC')->paginate(12);
+
+            // echo(json_encode($data['contacts']));
+            return view('contact.index', $data);
+        } else {
+            return view('contact.index');
+        }
     }
 
     /**
