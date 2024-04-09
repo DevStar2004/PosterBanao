@@ -24,7 +24,14 @@ class FrameController extends Controller
     {
         if (Admin::isPermission('frame')) {
             $data['categories'] = FrameCategory::where('status', '0')->orderBy('id', 'DESC')->get();
-            $data['frames'] = Frame::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            
+            if(Session::get('admin_type') == 'Super'){
+                $data['frames'] = Frame::orderBy('id', 'DESC')->paginate(12);
+            }
+            else {
+                $data['frames'] = Frame::where('owner_id', Session::get('userid'))->
+                    orderBy('id', 'DESC')->paginate(12);
+            }
 
             return view('frame.index', $data);
         } else return view('frame.index');

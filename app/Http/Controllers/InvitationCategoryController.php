@@ -19,7 +19,11 @@ class InvitationCategoryController extends Controller
     public function index()
     {
         if (Admin::isPermission('category') == 'true') {
-            $data['categories'] = InvitationCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(22);
+            if(Session::get('admin_type') == 'Super')
+                $data['categories'] = InvitationCategory::orderBy('id', 'DESC')->paginate(22);
+            else
+                $data['categories'] = InvitationCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(22);
+            
             return view('invitation.category.index', $data);
         } else {
             return view('invitation.category.index');

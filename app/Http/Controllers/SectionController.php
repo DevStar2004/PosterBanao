@@ -21,7 +21,10 @@ class SectionController extends Controller
         if (Admin::isPermission('section') == 'false') {
             return view('section.index');
         } else {
-            $data['sections'] = Section::where('owner_id', Session::get('userid'))->orderBy('orders', 'ASC')->paginate(150);
+            if(Session::get('admin_type') == 'Super')
+                $data['sections'] = Section::orderBy('orders', 'ASC')->paginate(150);
+            else $data['sections'] = Section::where('owner_id', Session::get('userid'))->orderBy('orders', 'ASC')->paginate(150);
+            
             return view('section.index', $data);
         }
     }

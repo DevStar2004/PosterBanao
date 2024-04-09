@@ -22,7 +22,13 @@ class BusinessCardTamplateController extends Controller
     public function index()
     {
         if (Admin::isPermission('posts')) {
-            $data['tamplates'] = BusinessCardTamplate::where('owner_id', Session::get('userid'))->paginate(12);
+            if(Session::get('user_type') == 'Super') {
+                $data['tamplates'] = BusinessCardTamplate::paginate(12);
+            }
+            else {
+                $data['tamplates'] = BusinessCardTamplate::where('owner_id', Session::get('userid'))->
+                    paginate(12);
+            }
             return view('businesscard.tamplate.index', $data);
         } else {
             return view('businesscard.tamplate.index');

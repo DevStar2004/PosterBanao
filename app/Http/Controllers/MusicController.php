@@ -22,7 +22,10 @@ class MusicController extends Controller
     public function index()
     {
         if (Admin::isPermission('video')) {
-            $data['musics'] = Music::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(22);
+            if(Session::get('admin_type') == 'Super')
+                $data['musics'] = Music::orderBy('id', 'DESC')->paginate(22);
+            else $data['musics'] = Music::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(22);
+            
             $data['categories'] = MusicCategory::where('status', '0')->get();
             // echo json_encode($data);
             return view('music.index', $data);

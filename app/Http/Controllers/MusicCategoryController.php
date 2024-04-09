@@ -20,7 +20,10 @@ class MusicCategoryController extends Controller
     public function index()
     {
         if (Admin::isPermission('video')) {
-            $data['categories'] = MusicCategory::where('owner_id', Session::get('userid'))->orderBy('orders', 'ASC')->paginate(150);
+            if(Session::get('admin_type') == 'Super')
+                $data['categories'] = MusicCategory::orderBy('orders', 'ASC')->paginate(150);
+            else $data['categories'] = MusicCategory::where('owner_id', Session::get('userid'))->orderBy('orders', 'ASC')->paginate(150);
+            
             return view('music.category.index', $data);
         } else {
             return view('music.category.index');

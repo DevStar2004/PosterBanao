@@ -85,8 +85,6 @@
                     </li>
                 @endif
 
-
-
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#festivalSection"
                         class="nav-link {{ Request::path() == 'festivalCategory' || Request::path() == 'festival' ? 'active' : '' }}"
@@ -191,6 +189,7 @@
                         </ul>
                     </div>
                 </li>
+
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#customSection"
                         class="nav-link {{ Request::path() == 'customCategory' || Request::path() == 'custom' ? 'active' : '' }}"
@@ -269,6 +268,7 @@
                     </li>
                 @endif
 
+                @if (App\Models\Admin::isPermission('video') == 'true')
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#videoTamplateExamples"
                         class="nav-link {{ Request::path() == 'videotemplate' || Request::path() == 'videotemplatecategory' ? 'active' : '' }}"
@@ -298,7 +298,9 @@
                         </ul>
                     </div>
                 </li>
+                @endif
 
+                @if (App\Models\Admin::isPermission('video') == 'true')
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#musicExamples"
                         class="nav-link {{ Request::path() == 'music' || Request::path() == 'musiccategory' ? 'active' : '' }}"
@@ -328,6 +330,7 @@
                         </ul>
                     </div>
                 </li>
+                @endif
 
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#stickerExamples"
@@ -342,6 +345,7 @@
                     <div class="collapse {{ Request::path() == 'sticker' || Request::path() == 'stickercategory' || str_contains(Request::path(), 'stickerCategory') ? 'show' : '' }}"
                         id="stickerExamples">
                         <ul class="nav ms-4">
+                            @if (App\Models\Admin::isPermission('posts') == 'true')
                             <li
                                 class="nav-item {{ Request::path() == 'sticker' || str_contains(Request::path(), 'stickerCategory') ? 'active' : '' }}">
                                 <a class="nav-link " href="{{ url('/sticker') }}">
@@ -349,13 +353,16 @@
                                     <span class="sidenav-normal">Stickers</span>
                                 </a>
                             </li>
+                            @endif
+
+                            @if (App\Models\Admin::isPermission('category') == 'true')
                             <li class="nav-item {{ Request::path() == 'stickercategory' ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ url('/stickercategory') }}">
                                     <span class="sidenav-mini-icon"> D </span>
                                     <span class="sidenav-normal">Sticker Category</span>
                                 </a>
                             </li>
-
+                            @endif
                         </ul>
                     </div>
                 </li>
@@ -436,12 +443,14 @@
                     <div class="collapse {{ Request::path() == 'businesscardtemplate' || Request::path() == 'businesscarddigital' ? 'show' : '' }}"
                         id="businesscardtemplate">
                         <ul class="nav ms-4">
+                            @if (App\Models\Admin::isPermission('posts') == 'true')
                             <li class="nav-item {{ Request::path() == 'businesscardtemplate' ? 'active' : '' }}">
                                 <a class="nav-link " href="{{ url('/businesscardtemplate') }}">
                                     <span class="sidenav-mini-icon"> L </span>
                                     <span class="sidenav-normal">Visiting Card</span>
                                 </a>
                             </li>
+                            @endif
                             <li class="nav-item {{ Request::path() == 'businesscarddigital' ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ url('/businesscarddigital') }}">
                                     <span class="sidenav-mini-icon"> D </span>
@@ -466,54 +475,60 @@
                     <div class="collapse {{ Request::path() == 'invitationcard' || Request::path() == 'invitationcategory' ? 'show' : '' }}"
                         id="invitationcardtemplate">
                         <ul class="nav ms-4">
+
+                            @if (App\Models\Admin::isPermission('posts') == 'true')
                             <li class="nav-item {{ Request::path() == 'invitationcard' ? 'active' : '' }}">
                                 <a class="nav-link " href="{{ url('/invitationcard') }}">
                                     <span class="sidenav-mini-icon"> L </span>
                                     <span class="sidenav-normal">Tamplates</span>
                                 </a>
                             </li>
+                            @endif
+
+                            @if (App\Models\Admin::isPermission('category') == 'true')
                             <li class="nav-item {{ Request::path() == 'invitationcategory' ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ url('/invitationcategory') }}">
                                     <span class="sidenav-mini-icon"> D </span>
                                     <span class="sidenav-normal">Category</span>
                                 </a>
                             </li>
+                            @endif
 
                         </ul>
                     </div>
                 </li>
 
+                @if (App\Models\Admin::isPermission('admin') == 'true')
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#ourservices"
+                            class="nav-link {{ Request::path() == 'ourservices' || Request::path() == 'inquiries' ? 'active' : '' }}"
+                            aria-controls="businesscardtemplate" role="button" aria-expanded="false">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa fa-store text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Our Services</span>
+                        </a>
+                        <div class="collapse {{ Request::path() == 'ourservices' || Request::path() == 'inquiries' ? 'show' : '' }}"
+                            id="ourservices">
+                            <ul class="nav ms-4">
+                                <li class="nav-item {{ Request::path() == 'ourservices' ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ url('/ourservices') }}">
+                                        <span class="sidenav-mini-icon"> L </span>
+                                        <span class="sidenav-normal">Services</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{ Request::path() == 'inquiries' ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ url('/inquiries') }}">
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <span class="sidenav-normal">Inquiries</span>
+                                    </a>
+                                </li>
 
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#ourservices"
-                        class="nav-link {{ Request::path() == 'ourservices' || Request::path() == 'inquiries' ? 'active' : '' }}"
-                        aria-controls="businesscardtemplate" role="button" aria-expanded="false">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-store text-primary text-sm opacity-10"></i>
+                            </ul>
                         </div>
-                        <span class="nav-link-text ms-1">Our Services</span>
-                    </a>
-                    <div class="collapse {{ Request::path() == 'ourservices' || Request::path() == 'inquiries' ? 'show' : '' }}"
-                        id="ourservices">
-                        <ul class="nav ms-4">
-                            <li class="nav-item {{ Request::path() == 'ourservices' ? 'active' : '' }}">
-                                <a class="nav-link " href="{{ url('/ourservices') }}">
-                                    <span class="sidenav-mini-icon"> L </span>
-                                    <span class="sidenav-normal">Services</span>
-                                </a>
-                            </li>
-                            <li class="nav-item {{ Request::path() == 'inquiries' ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ url('/inquiries') }}">
-                                    <span class="sidenav-mini-icon"> D </span>
-                                    <span class="sidenav-normal">Inquiries</span>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </li>
-
+                    </li>
+                @endif
 
                 @if (App\Models\Admin::isPermission('slider') == 'true')
                     <li class="nav-item">
@@ -527,16 +542,20 @@
                         </a>
                     </li>
                 @endif
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::path() == 'backgrounds' ? 'active' : '' }}"
-                        href="{{ url('backgrounds') }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-file-image-o text-primary text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Backgrounds</span>
-                    </a>
-                </li>
+
+                @if (App\Models\Admin::isPermission('admin') == 'true')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::path() == 'backgrounds' ? 'active' : '' }}"
+                            href="{{ url('backgrounds') }}">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa fa-file-image-o text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Backgrounds</span>
+                        </a>
+                    </li>
+                @endif
+
                 @if (App\Models\Admin::isPermission('user') == 'true')
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'users' ? 'active' : '' }}"
@@ -550,16 +569,18 @@
                     </li>
                 @endif
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::path() == 'withdraws' ? 'active' : '' }}"
-                        href=" {{ url('withdraws') }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-wallet text-primary text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Withdraws</span>
-                    </a>
-                </li>
+                @if (App\Models\Admin::isPermission('admin') == 'true')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::path() == 'withdraws' ? 'active' : '' }}"
+                            href=" {{ url('withdraws') }}">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa fa-wallet text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Withdraws</span>
+                        </a>
+                    </li>
+                @endif
 
                 @if (App\Models\Admin::isPermission('contacts') == 'true')
                     <li class="nav-item">
@@ -599,7 +620,9 @@
                             <span class="nav-link-text ms-1">Subscription</span>
                         </a>
                     </li>
+                @endif
 
+                @if (App\Models\Admin::isPermission('admin') == 'true')
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'promocode' ? 'active' : '' }}"
                             href=" {{ url('promocode') }}">
@@ -638,18 +661,18 @@
                     </li>
                 @endif
 
-
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::path() == 'whatsappmessage' ? 'active' : '' }}"
-                        href=" {{ url('whatsappmessage') }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-whatsapp text-primary text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Whatsapp Message</span>
-                    </a>
-                </li>
-
+                @if (App\Models\Admin::isPermission('admin') == 'true')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::path() == 'whatsappmessage' ? 'active' : '' }}"
+                            href=" {{ url('whatsappmessage') }}">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa fa-whatsapp text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Whatsapp Message</span>
+                        </a>
+                    </li>
+                @endif
 
                 @if (App\Models\Admin::isPermission('setting') == 'true')
                     <li class="nav-item">

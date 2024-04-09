@@ -47,7 +47,11 @@ class InvitationController extends Controller
         //     $tamplate->save();
         // }
         if(Admin::isPermission('posts')) {
-            $data['cards'] = InvitationCard::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            if(Session::get('admin_type') == 'Super')
+                $data['cards'] = InvitationCard::orderBy('id', 'DESC')->paginate(12);
+            else
+                $data['cards'] = InvitationCard::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            
             return view('invitation.index',$data);
         } else return view('invitation.index');
     }
