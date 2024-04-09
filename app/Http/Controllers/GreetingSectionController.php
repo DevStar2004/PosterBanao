@@ -18,7 +18,10 @@ class GreetingSectionController extends Controller
     public function index()
     {
         if (Admin::isPermission('section')) {
-            $data['sections'] = GreetingSection::where('owner_id', Session::get('userid'))->orderBy('orders', 'ASC')->get();
+            if(Session::get('admin_type') == 'Super')
+                $data['sections'] = GreetingSection::orderBy('orders', 'ASC')->get();
+            else $data['sections'] = GreetingSection::where('owner_id', Session::get('userid'))->
+                    orderBy('orders', 'ASC')->get();
             // echo(json_encode($data['sections']));
             // die();
             return view('greeting.section.index', $data);

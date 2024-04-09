@@ -98,7 +98,6 @@
                                             @if ($post->section)
                                                 <button class="badge badge-sm bg-gradient-dark position-absolute"
                                                     {{ 1 > 3 ? 'ef' : '2ef' }}
-                                                    @if (Session::get('userid') != $post->owner_id || App\Models\Admin::isPermission('posts') == 'false') disabled @endif
                                                     id="ser-{{ $post->id }}"
                                                     onclick="removeFromSection({{ $post->id }})">
                                                     {{ $post->section->name }} &nbsp;
@@ -115,7 +114,6 @@
                                                 <div class="d-flex mt-2">
                                                     <div>
                                                         <a class="btn btn-icon-only btn-rounded btn-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center 
-                                      @if (Session::get('userid') != $section->owner_id || App\Models\Admin::isPermission('section') == 'false') disabled @endif"
                                                             href="{{ secure_url('/festival/' . $post->id . '/edit') }}">
                                                             <i class="fas fa-pencil-alt"></i>
                                                         </a>

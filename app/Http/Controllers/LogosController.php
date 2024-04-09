@@ -21,7 +21,10 @@ class LogosController extends Controller
     public function index()
     {
         if (Admin::isPermission('posts')) {
-            $data['categories'] = LogoCategory::where('status', '0')->orderBy('id', 'DESC')->get();
+
+            if(Session::get('admin_type') == 'Super')
+                $data['categories'] = LogoCategory::where('status', '0')->orderBy('id', 'DESC')->get();
+            else $data['categories'] = LogoCategory::where('owner_id', Session::get('userid'))->where('status', '0')->orderBy('id', 'DESC')->get();
             $data['logos'] = Logos::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
 
             return view('logo.index', $data);

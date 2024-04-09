@@ -37,8 +37,15 @@ class CategoryController extends Controller
     public function businessCategory()
     {
         if (Admin::isPermission('category') == 'true') {
-            $data['categories'] = Category::where('type', 'business')->where('owner_id', Session::get('userid'))->
-                orderBy('id', 'DESC')->paginate(12);
+            if(Session::get('user_type') == 'Super') {
+                $data['categories'] = Category::where('type', 'business')->orderBy('id', 'DESC')->
+                    paginate(12);
+            }
+            else {
+                $data['categories'] = Category::where('type', 'business')->where('owner_id', Session::get('userid'))->
+                    orderBy('id', 'DESC')->paginate(12);
+            }
+            
             $data['type'] = 'business';
             return view('category.index', $data);
         } else return view('category.index', ['type' => 'business']);

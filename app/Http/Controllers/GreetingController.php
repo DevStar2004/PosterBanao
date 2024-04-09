@@ -49,7 +49,10 @@ class GreetingController extends Controller
                 }
             }
 
-            $data['posts'] = Greeting::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            if(Session::get('admin_type') == 'Super')
+                $data['posts'] = Greeting::orderBy('id', 'DESC')->paginate(12);
+            else $data['posts'] = Greeting::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            
             $data['sections'] = GreetingSection::where('status', '0')->get();
             // echo(json_encode($data['posts']));
             // die();

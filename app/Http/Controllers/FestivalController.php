@@ -52,7 +52,12 @@ class FestivalController extends Controller
             }
 
             $data['sections'] = Section::where('status', '0')->get();
-            $data['posts'] = Posts::with('section')->where('owner_id', Session::get('userid'))->where('type', 'festival')->orderBy('id', 'DESC')->paginate(12);
+            if(Session::get('admin_type') == 'Super'){
+                $data['posts'] = Posts::with('section')->where('type', 'festival')->
+                    orderBy('id', 'DESC')->paginate(12);
+            }
+            else $data['posts'] = Posts::with('section')->where('owner_id', Session::get('userid'))->
+                where('type', 'festival')->orderBy('id', 'DESC')->paginate(12);
             $data['categories'] = Category::where('status', '0')->where('type', 'festival')->get();
 
             return view('festival.index', $data);

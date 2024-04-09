@@ -8,6 +8,7 @@ use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Support\Str;
 use Storage;
 use Carbon\Carbon;
@@ -21,8 +22,12 @@ class WhatsappMessageController extends Controller
      */
     public function index()
     {
-        $data['messages'] = WhatsappMessage::orderBy('id', 'DESC')->paginate(12);
-        return view('whatsapp.index',$data);
+        if(Admin::isPermission('amdin')) {
+            $data['messages'] = WhatsappMessage::orderBy('id', 'DESC')->paginate(12);
+            return view('whatsapp.index',$data);
+        } else {
+            return back();
+        }
     }
     
     public function sendSingleUserWhatsappMessage(Request $request){

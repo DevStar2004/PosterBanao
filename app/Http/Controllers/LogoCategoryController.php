@@ -18,7 +18,10 @@ class LogoCategoryController extends Controller
     public function index()
     {
         if(Admin::isPermission('category') == 'true') {
-            $data['categories'] = LogoCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            if(Session::get('admin_type') == 'Super')
+                $data['categories'] = LogoCategory::orderBy('id', 'DESC')->paginate(12);
+            else
+                $data['categories'] = LogoCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
             // echo(json_encode($data['posts']));
             // die();
             return view('logo.category.index',$data);

@@ -18,9 +18,14 @@ class ContactController extends Controller
     public function index()
     {
         if (Admin::isPermission('contacts')) {
-            $data['contacts'] = Contact::with('user')->where('owner_id', Session::get('userid'))->
-                orderBy('id', 'DESC')->paginate(12);
-
+            
+            if(Session::get('admin_type') == 'Super'){
+                $data['contacts'] = Contact::with('user')->orderBy('id', 'DESC')->paginate(12);
+            }
+            else {
+                $data['contacts'] = Contact::with('user')->where('owner_id', Session::get('userid'))->
+                    orderBy('id', 'DESC')->paginate(12);
+            }
             // echo(json_encode($data['contacts']));
             return view('contact.index', $data);
         } else {

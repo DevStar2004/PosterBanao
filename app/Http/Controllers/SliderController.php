@@ -20,7 +20,10 @@ class SliderController extends Controller
     public function index()
     {
         if (Admin::isPermission('slider')) {
-            $data['sliders'] = Slider::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            if(Session::get('admin_type') == 'Super')
+                $data['sliders'] = Slider::orderBy('id', 'DESC')->paginate(12);
+            else $data['sliders'] = Slider::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            
             return view('slider.index', $data);
         } else {
             return view('slider.index');

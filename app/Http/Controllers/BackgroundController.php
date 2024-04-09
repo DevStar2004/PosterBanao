@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\Background;
 use Illuminate\Support\Str;
@@ -16,8 +17,12 @@ class BackgroundController extends Controller
      */
     public function index()
     {
-        $data['backgrounds'] = Background::orderBy('id', 'DESC')->paginate(12);
-        return view('background.index',$data);
+        if (Admin::isPermission('admin')) {
+            $data['backgrounds'] = Background::orderBy('id', 'DESC')->paginate(12);
+            return view('background.index', $data);
+        } else {
+            return back();
+        }
     }
 
     /**
@@ -39,37 +44,34 @@ class BackgroundController extends Controller
     public function store(Request $request)
     {
         $b = new Background();
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            
-            if(Setting::getValue('storage_type') == "digitalOccean"){
-                
-                $item_url = Storage::disk('spaces')->put('uploads/posts/'.$fileName, file_get_contents($image),'public');
-                $thumbnail_url = env("DO_SPACES_URL").'/uploads/posts/'.$fileName;
-                
-            }else{
-                $thumbName = Str::uuid() . '.' .$extension;
+
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $item_url = Storage::disk('spaces')->put('uploads/posts/' . $fileName, file_get_contents($image), 'public');
+                $thumbnail_url = env('DO_SPACES_URL') . '/uploads/posts/' . $fileName;
+            } else {
+                $thumbName = Str::uuid() . '.' . $extension;
                 $image->move('uploads/posts', $fileName);
-                $item_url = 'uploads/posts/'.$fileName;
-                $thumbnail_url = 'uploads/posts/'.$thumbName;
-                switch($extension){ 
+                $item_url = 'uploads/posts/' . $fileName;
+                $thumbnail_url = 'uploads/posts/' . $thumbName;
+                switch ($extension) {
                     case 'jpeg':
-                        $image = imagecreatefromjpeg($item_url); 
-                        break; 
-                    case 'png': 
-                        $image = imagecreatefrompng($item_url); 
-                        break; 
-                    case 'gif': 
-                        $image = imagecreatefromgif($item_url); 
-                        break; 
-                    default: 
-                        $image = imagecreatefromjpeg($item_url); 
+                        $image = imagecreatefromjpeg($item_url);
+                        break;
+                    case 'png':
+                        $image = imagecreatefrompng($item_url);
+                        break;
+                    case 'gif':
+                        $image = imagecreatefromgif($item_url);
+                        break;
+                    default:
+                        $image = imagecreatefromjpeg($item_url);
                 }
                 imagejpeg($image, $thumbnail_url, 50);
-                
             }
             $b->item_url = $thumbnail_url;
         }

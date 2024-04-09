@@ -23,7 +23,10 @@ class NotificationController extends Controller
     public function index()
     {
         if (Admin::isPermission('pushnotification')) {
-            $data['notifications'] = Notification::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            if(Session::get('admin_type') == 'Super') 
+                $data['notifications'] = Notification::orderBy('id', 'DESC')->paginate(12);
+            else $data['notifications'] = Notification::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            
             return view('notification.index', $data);
         } else {
             return view('notification.index');

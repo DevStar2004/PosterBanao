@@ -19,7 +19,14 @@ class FrameCategoryController extends Controller
     public function index()
     {
         if (Admin::isPermission('frame')) {
-            $data['categories'] = FrameCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+
+            if(Session::get('admin_type') == 'Super') {
+                $data['categories'] = FrameCategory::orderBy('id', 'DESC')->paginate(12);
+            }
+            else {
+                $data['categories'] = FrameCategory::where('owner_id', Session::get('userid'))->
+                    orderBy('id', 'DESC')->paginate(12);
+            }
             // echo(json_encode($data['posts']));
             // die();
             return view('frame.category.index', $data);

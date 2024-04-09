@@ -26,7 +26,11 @@ class PoliticalController extends Controller
     {
         if (Admin::isPermission('posts') == 'true') {
             $data['sections'] = Section::where('status', '0')->get();
-            $data['posts'] = Posts::with('section')->where('owner_id', Session::get('userid'))->where('type', 'political')->orderBy('id', 'DESC')->paginate(8);
+
+            if(Session::get('admin_type') == 'Super')
+                $data['posts'] = Posts::with('section')->where('type', 'political')->orderBy('id', 'DESC')->paginate(8);
+            else $data['posts'] = Posts::with('section')->where('owner_id', Session::get('userid'))->where('type', 'political')->orderBy('id', 'DESC')->paginate(8);
+            
             $data['categories'] = Category::where('status', '0')->where('type', 'political')->get();
             // echo(json_encode($data['posts']));
             // die();
@@ -344,9 +348,9 @@ class PoliticalController extends Controller
                 @unlink($posts->item_url);
                 @unlink($posts->thumb_url);
             }
-            $post->orientation = $orientation;
-            $post->height = $size[1];
-            $post->width = $size[0];
+            $posts->orientation = $orientation;
+            $posts->height = $size[1];
+            $posts->width = $size[0];
             $posts->item_url = $item_url;
             $posts->thumb_url = $thumbnail_url;
         }
@@ -397,9 +401,9 @@ class PoliticalController extends Controller
                 @unlink($posts->thumb_url);
                 @unlink($posts->thumb_url);
             }
-            $post->orientation = $orientation;
-            $post->height = $size[1];
-            $post->width = $size[0];
+            $posts->orientation = $orientation;
+            $posts->height = $size[1];
+            $posts->width = $size[0];
             $posts->item_url = $thumbnail_url;
             $posts->thumb_url = $thumbnail_url;
         }
