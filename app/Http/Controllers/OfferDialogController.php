@@ -21,9 +21,11 @@ class OfferDialogController extends Controller
     public function index()
     {
         if (Admin::isPermission('offerdialog')) {
-            if(Session::get('admin_type') == 'Super')
+            if (Session::get('admin_type') == 'Super') {
                 $data['offerdialogs'] = OfferDialog::orderBy('id', 'DESC')->paginate(12);
-            else $data['offerdialogs'] = OfferDialog::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            } else {
+                $data['offerdialogs'] = OfferDialog::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            }
             return view('offerdialog.index', $data);
         } else {
             return view('offerdialog.index');

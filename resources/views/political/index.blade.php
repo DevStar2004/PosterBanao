@@ -1,7 +1,7 @@
 @extends('main')
 
 @php
-    $is_permitted = (App\Models\Admin::isPermission('posts') == 'true');
+    $is_permitted = App\Models\Admin::isPermission('posts') ;
 @endphp
 @section('content')
     <div class="row">

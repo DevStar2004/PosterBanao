@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Language;
 use App\Models\Setting;
 use Illuminate\Support\Str;
@@ -16,18 +17,20 @@ class LanguageController extends Controller
      */
     public function index()
     {
-        
-        $data['languages'] = Language::orderBy('id', 'DESC')->paginate(12);
-        return view('language.index',$data);
+        if(Admin::isPermission('admin')) {
+            $data['languages'] = Language::orderBy('id', 'DESC')->paginate(12);
+            return view('language.index', $data);
+        } else {
+            return back();
+        }
     }
-    
+
     public function language_status(Request $request)
     {
         // echo("okk");
-        $festivals = Language::find($request->get("id"));
-        $festivals->status = ($request->get("checked")=="true")?0:1;
+        $festivals = Language::find($request->get('id'));
+        $festivals->status = $request->get('checked') == 'true' ? 0 : 1;
         $festivals->save();
-        
     }
     /**
      * Show the form for creating a new resource.
@@ -36,7 +39,6 @@ class LanguageController extends Controller
      */
     public function create()
     {
-        
         return view('language.create');
     }
 
@@ -49,49 +51,48 @@ class LanguageController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-             'image' => 'required|mimes:jpg,png,jpeg',
-             'name' => 'required',
-             'code' => 'required',
+            'image' => 'required|mimes:jpg,png,jpeg',
+            'name' => 'required',
+            'code' => 'required',
         ]);
-        
+
         $posts = new Language();
-        $posts->language_name = $request->get("name");
-        $posts->language_code = $request->get("code");
-        
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+        $posts->language_name = $request->get('name');
+        $posts->language_code = $request->get('code');
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            $thumbName = Str::uuid() . '.' .$extension;
-            
+            $thumbName = Str::uuid() . '.' . $extension;
+
             $image->move('uploads/posts', $fileName);
-            
-            $item_url = 'uploads/posts/'.$fileName;
-            $thumbnail_url = 'uploads/posts/'.$thumbName;
-            
-            switch($extension){ 
+
+            $item_url = 'uploads/posts/' . $fileName;
+            $thumbnail_url = 'uploads/posts/' . $thumbName;
+
+            switch ($extension) {
                 case 'jpeg':
-                    $image = imagecreatefromjpeg($item_url); 
-                    break; 
-                case 'png': 
-                    $image = imagecreatefrompng($item_url); 
-                    break; 
-                case 'gif': 
-                    $image = imagecreatefromgif($item_url); 
-                    break; 
-                default: 
-                    $image = imagecreatefromjpeg($item_url); 
+                    $image = imagecreatefromjpeg($item_url);
+                    break;
+                case 'png':
+                    $image = imagecreatefrompng($item_url);
+                    break;
+                case 'gif':
+                    $image = imagecreatefromgif($item_url);
+                    break;
+                default:
+                    $image = imagecreatefromjpeg($item_url);
             }
-            
+
             imagejpeg($image, $thumbnail_url, 50);
-            
+
             @unlink($item_url);
-            
+
             $posts->image = $thumbnail_url;
         }
-        
+
         $posts->save();
         return redirect()->route('language.index');
     }
@@ -115,9 +116,8 @@ class LanguageController extends Controller
      */
     public function edit($id)
     {
-        
         $data['language'] = Language::find($id);
-        return view('language.edit',$data);
+        return view('language.edit', $data);
     }
 
     /**
@@ -130,50 +130,49 @@ class LanguageController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-             'image' => 'nullable|mimes:jpg,png,jpeg',
-             'name' => 'required',
-             'code' => 'required',
+            'image' => 'nullable|mimes:jpg,png,jpeg',
+            'name' => 'required',
+            'code' => 'required',
         ]);
-        
+
         $posts = Language::find($id);
-        $posts->language_name = $request->get("name");
-        $posts->language_code = $request->get("code");
-        
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+        $posts->language_name = $request->get('name');
+        $posts->language_code = $request->get('code');
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            $thumbName = Str::uuid() . '.' .$extension;
-            
+            $thumbName = Str::uuid() . '.' . $extension;
+
             $image->move('uploads/posts', $fileName);
-            
-            $item_url = 'uploads/posts/'.$fileName;
-            $thumbnail_url = 'uploads/posts/'.$thumbName;
-            
-            switch($extension){ 
+
+            $item_url = 'uploads/posts/' . $fileName;
+            $thumbnail_url = 'uploads/posts/' . $thumbName;
+
+            switch ($extension) {
                 case 'jpeg':
-                    $image = imagecreatefromjpeg($item_url); 
-                    break; 
-                case 'png': 
-                    $image = imagecreatefrompng($item_url); 
-                    break; 
-                case 'gif': 
-                    $image = imagecreatefromgif($item_url); 
-                    break; 
-                default: 
-                    $image = imagecreatefromjpeg($item_url); 
+                    $image = imagecreatefromjpeg($item_url);
+                    break;
+                case 'png':
+                    $image = imagecreatefrompng($item_url);
+                    break;
+                case 'gif':
+                    $image = imagecreatefromgif($item_url);
+                    break;
+                default:
+                    $image = imagecreatefromjpeg($item_url);
             }
-            
+
             imagejpeg($image, $thumbnail_url, 50);
-            
+
             @unlink($item_url);
             @unlink($posts->image);
-            
+
             $posts->image = $thumbnail_url;
         }
-        
+
         $posts->save();
         return redirect()->route('language.index');
     }

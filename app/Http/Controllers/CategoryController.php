@@ -26,7 +26,7 @@ class CategoryController extends Controller
 
     public function festivalCategory()
     {
-        if (Admin::isPermission('category') == 'true') {
+        if (Admin::isPermission('category')) {
             $data['categories'] = Category::where('type', 'festival')->where('owner_id', Session::get('userid'))->
                 orderBy('id', 'DESC')->paginate(12);
             $data['type'] = 'festival';
@@ -36,7 +36,7 @@ class CategoryController extends Controller
 
     public function businessCategory()
     {
-        if (Admin::isPermission('category') == 'true') {
+        if (Admin::isPermission('category')) {
             if(Session::get('user_type') == 'Super') {
                 $data['categories'] = Category::where('type', 'business')->orderBy('id', 'DESC')->
                     paginate(12);
@@ -58,7 +58,7 @@ class CategoryController extends Controller
 
     public function customCategory()
     {
-        if (Admin::isPermission('category') == 'true') {
+        if (Admin::isPermission('category')) {
             $data['categories'] = Category::where('type', 'custom')->
                 where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
             $data['type'] = 'custom';
@@ -70,7 +70,7 @@ class CategoryController extends Controller
 
     public function politicalCategory()
     {
-        if (Admin::isPermission('category') == 'true') {
+        if (Admin::isPermission('category')) {
             $data['categories'] = Category::where('type', 'political')->
                 where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
             $data['type'] = 'political';

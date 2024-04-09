@@ -53,26 +53,32 @@
         <div id="sidenav-collapse-main">
             <ul class="navbar-nav">
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::path() == '/' ? 'active' : '' }}" href="/">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::path() == 'language' ? 'active' : '' }}"
-                        href="{{ url('language') }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-language text-primary text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Language</span>
-                    </a>
-                </li>
-                @if (App\Models\Admin::isPermission('section') == 'true')
+                @if (App\Models\Admin::isPermission('admin'))
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::path() == '/' ? 'active' : '' }}" href="/">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Dashboard</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (App\Models\Admin::isPermission('admin'))
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::path() == 'language' ? 'active' : '' }}"
+                            href="{{ url('language') }}">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa fa-language text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Language</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (App\Models\Admin::isPermission('section'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'section' ? 'active' : '' }}"
                             href="{{ url('section') }}">
@@ -98,7 +104,7 @@
                     <div class="collapse {{ Request::path() == 'festivalCategory' || Request::path() == 'festival' ? 'show' : '' }}"
                         id="festivalSection">
                         <ul class="nav ms-4">
-                            @if (App\Models\Admin::isPermission('posts') == 'true')
+                            @if (App\Models\Admin::isPermission('posts'))
                                 <li class="nav-item {{ Request::path() == 'festival' ? 'active' : '' }}">
                                     <a class="nav-link " href="{{ url('/festival') }}">
                                         <span class="sidenav-mini-icon"> L </span>
@@ -106,7 +112,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (App\Models\Admin::isPermission('category') == 'true')
+                            @if (App\Models\Admin::isPermission('category'))
                                 <li class="nav-item {{ Request::path() == 'festivalCategory' ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ url('/festivalCategory') }}">
                                         <span class="sidenav-mini-icon"> D </span>
@@ -131,7 +137,7 @@
                     <div class="collapse {{ Request::path() == 'businessCategory' || Request::path() == 'businessSubCategory' || Request::path() == 'business' ? 'show' : '' }}"
                         id="businessSection">
                         <ul class="nav ms-4">
-                            @if (App\Models\Admin::isPermission('posts') == 'true')
+                            @if (App\Models\Admin::isPermission('posts'))
                                 <li class="nav-item {{ Request::path() == 'business' ? 'active' : '' }}">
                                     <a class="nav-link " href="{{ url('/business') }}">
                                         <span class="sidenav-mini-icon"> L </span>
@@ -139,7 +145,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (App\Models\Admin::isPermission('category') == 'true')
+                            @if (App\Models\Admin::isPermission('category'))
                                 <li class="nav-item {{ Request::path() == 'businessCategory' ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ url('/businessCategory') }}">
                                         <span class="sidenav-mini-icon"> D </span>
@@ -170,7 +176,7 @@
                     <div class="collapse {{ Request::path() == 'politicalCategory' || Request::path() == 'political' ? 'show' : '' }}"
                         id="politicalSection">
                         <ul class="nav ms-4">
-                            @if (App\Models\Admin::isPermission('posts') == 'true')
+                            @if (App\Models\Admin::isPermission('posts'))
                                 <li class="nav-item {{ Request::path() == 'political' ? 'active' : '' }}">
                                     <a class="nav-link " href="{{ url('/political') }}">
                                         <span class="sidenav-mini-icon"> L </span>
@@ -178,7 +184,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (App\Models\Admin::isPermission('category') == 'true')
+                            @if (App\Models\Admin::isPermission('category'))
                                 <li class="nav-item {{ Request::path() == 'politicalCategory' ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ url('/politicalCategory') }}">
                                         <span class="sidenav-mini-icon"> D </span>
@@ -203,7 +209,7 @@
                     <div class="collapse {{ Request::path() == 'customCategory' || Request::path() == 'custom' ? 'show' : '' }}"
                         id="customSection">
                         <ul class="nav ms-4">
-                            @if (App\Models\Admin::isPermission('posts') == 'true')
+                            @if (App\Models\Admin::isPermission('posts'))
                                 <li class="nav-item {{ Request::path() == 'custom' ? 'active' : '' }}">
                                     <a class="nav-link " href="{{ url('/custom') }}">
                                         <span class="sidenav-mini-icon"> L </span>
@@ -211,7 +217,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (App\Models\Admin::isPermission('category') == 'true')
+                            @if (App\Models\Admin::isPermission('category'))
                                 <li class="nav-item {{ Request::path() == 'customCategory' ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ url('/customCategory') }}">
                                         <span class="sidenav-mini-icon"> D </span>
@@ -223,7 +229,7 @@
                     </div>
                 </li>
 
-                @if (App\Models\Admin::isPermission('greeting') == 'true')
+                @if (App\Models\Admin::isPermission('greeting'))
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#greetingExamples"
                             class="nav-link {{ Request::path() == 'greeting' || Request::path() == 'greetingsection' ? 'active' : '' }}"
@@ -255,7 +261,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('video') == 'true')
+                @if (App\Models\Admin::isPermission('video'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'video' ? 'active' : '' }}"
                             href="{{ url('video') }}">
@@ -268,68 +274,68 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('video') == 'true')
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#videoTamplateExamples"
-                        class="nav-link {{ Request::path() == 'videotemplate' || Request::path() == 'videotemplatecategory' ? 'active' : '' }}"
-                        aria-controls="videoTamplateExamples" role="button" aria-expanded="false">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-video text-primary text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Video Tamplates</span>
-                    </a>
-                    <div class="collapse {{ Request::path() == 'videotemplate' || Request::path() == 'videotemplatecategory' ? 'show' : '' }}"
-                        id="videoTamplateExamples">
-                        <ul class="nav ms-4">
-                            <li class="nav-item {{ Request::path() == 'videotemplate' ? 'active' : '' }}">
-                                <a class="nav-link " href="{{ url('/videotemplate') }}">
-                                    <span class="sidenav-mini-icon"> L </span>
-                                    <span class="sidenav-normal">Tamplates</span>
-                                </a>
-                            </li>
-                            <li class="nav-item {{ Request::path() == 'videotemplatecategory' ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ url('/videotemplatecategory') }}">
-                                    <span class="sidenav-mini-icon"> D </span>
-                                    <span class="sidenav-normal">Categories</span>
-                                </a>
-                            </li>
+                @if (App\Models\Admin::isPermission('video'))
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#videoTamplateExamples"
+                            class="nav-link {{ Request::path() == 'videotemplate' || Request::path() == 'videotemplatecategory' ? 'active' : '' }}"
+                            aria-controls="videoTamplateExamples" role="button" aria-expanded="false">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa fa-video text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Video Tamplates</span>
+                        </a>
+                        <div class="collapse {{ Request::path() == 'videotemplate' || Request::path() == 'videotemplatecategory' ? 'show' : '' }}"
+                            id="videoTamplateExamples">
+                            <ul class="nav ms-4">
+                                <li class="nav-item {{ Request::path() == 'videotemplate' ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ url('/videotemplate') }}">
+                                        <span class="sidenav-mini-icon"> L </span>
+                                        <span class="sidenav-normal">Tamplates</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{ Request::path() == 'videotemplatecategory' ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ url('/videotemplatecategory') }}">
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <span class="sidenav-normal">Categories</span>
+                                    </a>
+                                </li>
 
-                        </ul>
-                    </div>
-                </li>
+                            </ul>
+                        </div>
+                    </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('video') == 'true')
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#musicExamples"
-                        class="nav-link {{ Request::path() == 'music' || Request::path() == 'musiccategory' ? 'active' : '' }}"
-                        aria-controls="musicExamples" role="button" aria-expanded="false">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-music text-primary text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Music</span>
-                    </a>
-                    <div class="collapse {{ Request::path() == 'music' || Request::path() == 'musiccategory' ? 'show' : '' }}"
-                        id="musicExamples">
-                        <ul class="nav ms-4">
-                            <li class="nav-item {{ Request::path() == 'music' ? 'active' : '' }}">
-                                <a class="nav-link " href="{{ url('/music') }}">
-                                    <span class="sidenav-mini-icon"> L </span>
-                                    <span class="sidenav-normal">Musics</span>
-                                </a>
-                            </li>
-                            <li class="nav-item {{ Request::path() == 'musiccategory' ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ url('/musiccategory') }}">
-                                    <span class="sidenav-mini-icon"> D </span>
-                                    <span class="sidenav-normal">Music Category</span>
-                                </a>
-                            </li>
+                @if (App\Models\Admin::isPermission('video'))
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#musicExamples"
+                            class="nav-link {{ Request::path() == 'music' || Request::path() == 'musiccategory' ? 'active' : '' }}"
+                            aria-controls="musicExamples" role="button" aria-expanded="false">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa fa-music text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Music</span>
+                        </a>
+                        <div class="collapse {{ Request::path() == 'music' || Request::path() == 'musiccategory' ? 'show' : '' }}"
+                            id="musicExamples">
+                            <ul class="nav ms-4">
+                                <li class="nav-item {{ Request::path() == 'music' ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ url('/music') }}">
+                                        <span class="sidenav-mini-icon"> L </span>
+                                        <span class="sidenav-normal">Musics</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{ Request::path() == 'musiccategory' ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ url('/musiccategory') }}">
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <span class="sidenav-normal">Music Category</span>
+                                    </a>
+                                </li>
 
-                        </ul>
-                    </div>
-                </li>
+                            </ul>
+                        </div>
+                    </li>
                 @endif
 
                 <li class="nav-item">
@@ -345,29 +351,29 @@
                     <div class="collapse {{ Request::path() == 'sticker' || Request::path() == 'stickercategory' || str_contains(Request::path(), 'stickerCategory') ? 'show' : '' }}"
                         id="stickerExamples">
                         <ul class="nav ms-4">
-                            @if (App\Models\Admin::isPermission('posts') == 'true')
-                            <li
-                                class="nav-item {{ Request::path() == 'sticker' || str_contains(Request::path(), 'stickerCategory') ? 'active' : '' }}">
-                                <a class="nav-link " href="{{ url('/sticker') }}">
-                                    <span class="sidenav-mini-icon"> L </span>
-                                    <span class="sidenav-normal">Stickers</span>
-                                </a>
-                            </li>
+                            @if (App\Models\Admin::isPermission('posts'))
+                                <li
+                                    class="nav-item {{ Request::path() == 'sticker' || str_contains(Request::path(), 'stickerCategory') ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ url('/sticker') }}">
+                                        <span class="sidenav-mini-icon"> L </span>
+                                        <span class="sidenav-normal">Stickers</span>
+                                    </a>
+                                </li>
                             @endif
 
-                            @if (App\Models\Admin::isPermission('category') == 'true')
-                            <li class="nav-item {{ Request::path() == 'stickercategory' ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ url('/stickercategory') }}">
-                                    <span class="sidenav-mini-icon"> D </span>
-                                    <span class="sidenav-normal">Sticker Category</span>
-                                </a>
-                            </li>
+                            @if (App\Models\Admin::isPermission('category'))
+                                <li class="nav-item {{ Request::path() == 'stickercategory' ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ url('/stickercategory') }}">
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <span class="sidenav-normal">Sticker Category</span>
+                                    </a>
+                                </li>
                             @endif
                         </ul>
                     </div>
                 </li>
 
-                @if (App\Models\Admin::isPermission('frame') == 'true')
+                @if (App\Models\Admin::isPermission('frame'))
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#frameExamples"
                             class="nav-link {{ Request::path() == 'frame' || Request::path() == 'framecategory' || str_contains(Request::path(), 'frameCategory') ? 'active' : '' }}"
@@ -429,38 +435,37 @@
                     </li>
                 @endif
 
+                @if (App\Models\Admin::isPermission('posts'))
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#businesscardtemplate"
+                            class="nav-link {{ Request::path() == 'businesscardtemplate' || Request::path() == 'businesscarddigital' ? 'active' : '' }}"
+                            aria-controls="businesscardtemplate" role="button" aria-expanded="false">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa fa-address-card text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Business Card</span>
+                        </a>
+                        <div class="collapse {{ Request::path() == 'businesscardtemplate' || Request::path() == 'businesscarddigital' ? 'show' : '' }}"
+                            id="businesscardtemplate">
+                            <ul class="nav ms-4">
+                                <li class="nav-item {{ Request::path() == 'businesscardtemplate' ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ url('/businesscardtemplate') }}">
+                                        <span class="sidenav-mini-icon"> L </span>
+                                        <span class="sidenav-normal">Visiting Card</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{ Request::path() == 'businesscarddigital' ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ url('/businesscarddigital') }}">
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <span class="sidenav-normal">Clickable Card</span>
+                                    </a>
+                                </li>
 
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#businesscardtemplate"
-                        class="nav-link {{ Request::path() == 'businesscardtemplate' || Request::path() == 'businesscarddigital' ? 'active' : '' }}"
-                        aria-controls="businesscardtemplate" role="button" aria-expanded="false">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-address-card text-primary text-sm opacity-10"></i>
+                            </ul>
                         </div>
-                        <span class="nav-link-text ms-1">Business Card</span>
-                    </a>
-                    <div class="collapse {{ Request::path() == 'businesscardtemplate' || Request::path() == 'businesscarddigital' ? 'show' : '' }}"
-                        id="businesscardtemplate">
-                        <ul class="nav ms-4">
-                            @if (App\Models\Admin::isPermission('posts') == 'true')
-                            <li class="nav-item {{ Request::path() == 'businesscardtemplate' ? 'active' : '' }}">
-                                <a class="nav-link " href="{{ url('/businesscardtemplate') }}">
-                                    <span class="sidenav-mini-icon"> L </span>
-                                    <span class="sidenav-normal">Visiting Card</span>
-                                </a>
-                            </li>
-                            @endif
-                            <li class="nav-item {{ Request::path() == 'businesscarddigital' ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ url('/businesscarddigital') }}">
-                                    <span class="sidenav-mini-icon"> D </span>
-                                    <span class="sidenav-normal">Clickable Card</span>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </li>
+                    </li>
+                @endif
 
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#invitationcardtemplate"
@@ -476,29 +481,29 @@
                         id="invitationcardtemplate">
                         <ul class="nav ms-4">
 
-                            @if (App\Models\Admin::isPermission('posts') == 'true')
-                            <li class="nav-item {{ Request::path() == 'invitationcard' ? 'active' : '' }}">
-                                <a class="nav-link " href="{{ url('/invitationcard') }}">
-                                    <span class="sidenav-mini-icon"> L </span>
-                                    <span class="sidenav-normal">Tamplates</span>
-                                </a>
-                            </li>
+                            @if (App\Models\Admin::isPermission('posts'))
+                                <li class="nav-item {{ Request::path() == 'invitationcard' ? 'active' : '' }}">
+                                    <a class="nav-link " href="{{ url('/invitationcard') }}">
+                                        <span class="sidenav-mini-icon"> L </span>
+                                        <span class="sidenav-normal">Tamplates</span>
+                                    </a>
+                                </li>
                             @endif
 
-                            @if (App\Models\Admin::isPermission('category') == 'true')
-                            <li class="nav-item {{ Request::path() == 'invitationcategory' ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ url('/invitationcategory') }}">
-                                    <span class="sidenav-mini-icon"> D </span>
-                                    <span class="sidenav-normal">Category</span>
-                                </a>
-                            </li>
+                            @if (App\Models\Admin::isPermission('category'))
+                                <li class="nav-item {{ Request::path() == 'invitationcategory' ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ url('/invitationcategory') }}">
+                                        <span class="sidenav-mini-icon"> D </span>
+                                        <span class="sidenav-normal">Category</span>
+                                    </a>
+                                </li>
                             @endif
 
                         </ul>
                     </div>
                 </li>
 
-                @if (App\Models\Admin::isPermission('admin') == 'true')
+                @if (App\Models\Admin::isPermission('admin'))
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#ourservices"
                             class="nav-link {{ Request::path() == 'ourservices' || Request::path() == 'inquiries' ? 'active' : '' }}"
@@ -530,7 +535,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('slider') == 'true')
+                @if (App\Models\Admin::isPermission('slider'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'slider' ? 'active' : '' }}"
                             href="{{ url('slider') }}">
@@ -543,7 +548,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('admin') == 'true')
+                @if (App\Models\Admin::isPermission('admin'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'backgrounds' ? 'active' : '' }}"
                             href="{{ url('backgrounds') }}">
@@ -556,7 +561,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('user') == 'true')
+                @if (App\Models\Admin::isPermission('user'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'users' ? 'active' : '' }}"
                             href=" {{ url('users') }}">
@@ -569,7 +574,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('admin') == 'true')
+                @if (App\Models\Admin::isPermission('admin'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'withdraws' ? 'active' : '' }}"
                             href=" {{ url('withdraws') }}">
@@ -582,7 +587,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('contacts') == 'true')
+                @if (App\Models\Admin::isPermission('contacts'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'contacts' ? 'active' : '' }}"
                             href=" {{ url('contacts') }}">
@@ -595,7 +600,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('transaction') == 'true')
+                @if (App\Models\Admin::isPermission('transaction'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'transaction' ? 'active' : '' }}"
                             href=" {{ url('transaction') }}">
@@ -609,7 +614,7 @@
                 @endif
 
 
-                @if (App\Models\Admin::isPermission('subscription') == 'true')
+                @if (App\Models\Admin::isPermission('subscription'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'subscription' ? 'active' : '' }}"
                             href=" {{ url('subscription') }}">
@@ -622,7 +627,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('admin') == 'true')
+                @if (App\Models\Admin::isPermission('admin'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'promocode' ? 'active' : '' }}"
                             href=" {{ url('promocode') }}">
@@ -635,7 +640,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('offerdialog') == 'true')
+                @if (App\Models\Admin::isPermission('offerdialog'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'offerdialog' ? 'active' : '' }}"
                             href=" {{ url('offerdialog') }}">
@@ -648,7 +653,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('pushnotification') == 'true')
+                @if (App\Models\Admin::isPermission('pushnotification'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'pushnotification' ? 'active' : '' }}"
                             href=" {{ url('pushnotification') }}">
@@ -661,7 +666,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('admin') == 'true')
+                @if (App\Models\Admin::isPermission('admin'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'whatsappmessage' ? 'active' : '' }}"
                             href=" {{ url('whatsappmessage') }}">
@@ -674,7 +679,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('setting') == 'true')
+                @if (App\Models\Admin::isPermission('setting'))
                     <li class="nav-item">
                         <a class="nav-link {{ Request::path() == 'setting' ? 'active' : '' }}"
                             href=" {{ url('setting') }}">
@@ -687,7 +692,7 @@
                     </li>
                 @endif
 
-                @if (App\Models\Admin::isPermission('admin') == 'true')
+                @if (App\Models\Admin::isPermission('admin'))
                     <li class="nav-item mt-3">
                         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
                     </li>

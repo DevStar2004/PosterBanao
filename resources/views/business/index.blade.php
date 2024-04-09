@@ -1,8 +1,9 @@
 @extends('main')
 
 @php
-    $is_permitted = (App\Models\Admin::isPermission('section') == 'true');
+    $is_permitted = App\Models\Admin::isPermission('section');
 @endphp
+
 @section('content')
     <div class="row">
         <div class="col-12">

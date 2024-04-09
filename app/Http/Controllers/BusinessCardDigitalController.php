@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\BusinessCardDigital;
+use App\Models\Admin;
 use Illuminate\Support\Str;
 use ZipArchive;
-
+use Session;
 class BusinessCardDigitalController extends Controller
 {
     /**
@@ -16,8 +17,19 @@ class BusinessCardDigitalController extends Controller
      */
     public function index()
     {
-        $data['cards'] = BusinessCardDigital::paginate(12);
-        return view('businesscard.digital.index',$data);
+        if(Admin::isPermission('posts')) {
+            if(Session::get('admin_type') == 'Super'){
+                $data['cards'] = BusinessCardDigital::paginate(12);
+            }
+            else {
+                $user_id = Session::get('userid');
+                $data['cards'] = BusinessCardDigital::where('owner_id', $user_id)->paginate(12);
+            } 
+            return view('businesscard.digital.index',$data);
+        }
+        else {
+            return view('businesscard.digital.index');
+        }
     }
     
      public function card_status(Request $request)

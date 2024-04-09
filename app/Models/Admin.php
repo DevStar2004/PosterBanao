@@ -18,7 +18,7 @@ class Admin extends Model
         $user = Admin::find(Session::get('userid'));
         $permission = json_decode($user->permissions, true);
         
-        return $permission[$for];
+        return ($permission[$for] == 'true');
         // return true;
     }
     

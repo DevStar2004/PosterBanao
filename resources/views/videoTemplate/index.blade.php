@@ -1,7 +1,7 @@
 @extends('main')
 
 @php
-    $is_permitted = App\Models\Admin::isPermission('video') == 'true';
+    $is_permitted = App\Models\Admin::isPermission('video');
 @endphp
 
 @section('content')
