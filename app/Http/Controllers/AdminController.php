@@ -18,42 +18,52 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $data['admins'] = Admin::get();
-        return view('admin.index',$data);
+        if (Admin::isPermission('admin')) {
+            $data['admins'] = Admin::get();
+            return view('admin.index', $data);
+        } else {
+            return view('admin.index');
+        }
     }
-    
+
     public function setupView()
     {
         return view('installation.setup');
     }
-    
-    
+
     public function databaseSetup(Request $request)
     {
-		            
         $env = file_get_contents(base_path('.env'));
         $dbName = $request->get('db_name');
         $dbHost = $request->get('db_host');
         $dbUsername = $request->get('db_username');
         $dbPassword = $request->get('db_password');
-        $databaseSetting = '
-            DB_HOST="' . $dbHost . '"
-            DB_DATABASE="' . $dbName . '"
-            DB_USERNAME="' . $dbUsername . '"
-            DB_PASSWORD="' . $dbPassword . '"
+        $databaseSetting =
+            '
+            DB_HOST="' .
+            $dbHost .
+            '"
+            DB_DATABASE="' .
+            $dbName .
+            '"
+            DB_USERNAME="' .
+            $dbUsername .
+            '"
+            DB_PASSWORD="' .
+            $dbPassword .
+            '"
             ';
         // @ignoreCodingStandard
         $rows = explode("\n", $env);
-        $unwanted = "DB_HOST|DB_DATABASE|DB_USERNAME|DB_PASSWORD";
+        $unwanted = 'DB_HOST|DB_DATABASE|DB_USERNAME|DB_PASSWORD';
         $cleanArray = preg_grep("/$unwanted/i", $rows, PREG_GREP_INVERT);
 
         $cleanString = implode("\n", $cleanArray);
 
         $env = $cleanString . $databaseSetting;
         try {
-            
             $dbh = new \PDO('mysql:host=' . $dbHost, $dbUsername, $dbPassword);
-            
+
             $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
             // First check if database exists
@@ -68,68 +78,64 @@ class AdminController extends Controller
             $message = 'Database settings correct';
 
             try {
-                
                 file_put_contents(base_path('.env'), $env);
-                
+
                 $database = DB::unprepared(file_get_contents(public_path('posterbanao.sql')));
 
-                if($database == 'true') 
-                {
+                if ($database == 'true') {
                     file_put_contents(public_path('install'), 'posterbanao');
-                    return json_encode(array("code" => "200","description" => "Success"));
-                    
+                    return json_encode(['code' => '200', 'description' => 'Success']);
                 } else {
                     abort(404);
                 }
-                
             } catch (Exception $e) {
-                $message = "Unable to save the .env file, Please create it manually";
+                $message = 'Unable to save the .env file, Please create it manually';
             }
 
-            return json_encode(array("code" => "404","description" => $message));
-
+            return json_encode(['code' => '404', 'description' => $message]);
         } catch (\PDOException $e) {
-            
-            return json_encode(array("code" => "404","description" => 'PDO -> '.$e->getMessage()));
-
+            return json_encode(['code' => '404', 'description' => 'PDO -> ' . $e->getMessage()]);
         } catch (\Exception $e) {
-
-            return json_encode(array("code" => "404","description" => 'E -> '.$e->getMessage()));
-
+            return json_encode(['code' => '404', 'description' => 'E -> ' . $e->getMessage()]);
         }
     }
-    
-    function goToLogin(){
-         return view('login');
+
+    function goToLogin()
+    {
+        return view('login');
     }
-    
-    function logout(){
+
+    function logout()
+    {
         Session::flush();
         return view('login');
     }
-    
-    function login(Request $request){
-        
+
+    function login(Request $request)
+    {
         $request->validate([
             'username' => 'required',
             'password' => 'required',
-            
         ]);
-        
-        $data = Admin::where('username',$request->username)->first();
-        if($data){
-            if (Hash::check($request->password,$data->password)) {
+
+        $data = Admin::where('username', $request->username)->first();
+        if ($data) {
+            if (Hash::check($request->password, $data->password)) {
                 Session::put('userid', $data->id);
                 Session::put('username', $data->username);
                 Session::put('profile', $data->profile_pic);
                 Session::put('admin_type', $data->role);
-                
-                return redirect("/");
-            }else{
-                return redirect()->back()->withErrors(['loginerror' => 'Username password not match']);
+
+                return redirect('/');
+            } else {
+                return redirect()
+                    ->back()
+                    ->withErrors(['loginerror' => 'Username password not match']);
             }
-        }else{
-            return redirect()->back()->withErrors(['loginerror' => 'Username password not match']);
+        } else {
+            return redirect()
+                ->back()
+                ->withErrors(['loginerror' => 'Username password not match']);
         }
     }
 
@@ -138,7 +144,8 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
+    public function create()
+    {
         return view('admin.create');
     }
 
@@ -160,38 +167,40 @@ class AdminController extends Controller
         $admin->username = $request->get('username');
         $admin->email = $request->get('email');
         $admin->password = Hash::make($request->get('password'));
-        
-        $permission = array();
-        !empty($request->get('section')) ? $permission['section']='true' : $permission['section']='false';
-        !empty($request->get('category')) ? $permission['category']='true' : $permission['category']='false';
-        !empty($request->get('posts')) ? $permission['posts']='true' : $permission['posts']='false';
-        !empty($request->get('greeting')) ? $permission['greeting']='true' : $permission['greeting']='false';
-        !empty($request->get('video')) ? $permission['video']='true' : $permission['video']='false';
-        !empty($request->get('slider')) ? $permission['slider']='true' : $permission['slider']='false';
-        !empty($request->get('frame')) ? $permission['frame']='true' : $permission['frame']='false';
-        !empty($request->get('subscription')) ? $permission['subscription']='true' : $permission['subscription']='false';
-        !empty($request->get('offerdialog')) ? $permission['offerdialog']='true' : $permission['offerdialog']='false';
-        !empty($request->get('pushnotification')) ? $permission['pushnotification']='true' : $permission['pushnotification']='false';
-        !empty($request->get('contacts')) ? $permission['contacts']='true' : $permission['contacts']='false';
-        !empty($request->get('transaction')) ? $permission['transaction']='true' : $permission['transaction']='false';
-        !empty($request->get('user')) ? $permission['user']='true' : $permission['user']='false';
-        !empty($request->get('setting')) ? $permission['setting']='true' : $permission['setting']='false';
-        !empty($request->get('admin')) ? $permission['admin']='true' : $permission['admin']='false';
-        
+
+        $permission = [];
+        !empty($request->get('section')) ? ($permission['section'] = 'true') : ($permission['section'] = 'false');
+        !empty($request->get('category')) ? ($permission['category'] = 'true') : ($permission['category'] = 'false');
+        !empty($request->get('posts')) ? ($permission['posts'] = 'true') : ($permission['posts'] = 'false');
+        !empty($request->get('greeting')) ? ($permission['greeting'] = 'true') : ($permission['greeting'] = 'false');
+        !empty($request->get('video')) ? ($permission['video'] = 'true') : ($permission['video'] = 'false');
+        !empty($request->get('slider')) ? ($permission['slider'] = 'true') : ($permission['slider'] = 'false');
+        !empty($request->get('frame')) ? ($permission['frame'] = 'true') : ($permission['frame'] = 'false');
+        !empty($request->get('subscription')) ? ($permission['subscription'] = 'true') : ($permission['subscription'] = 'false');
+        !empty($request->get('offerdialog')) ? ($permission['offerdialog'] = 'true') : ($permission['offerdialog'] = 'false');
+        !empty($request->get('pushnotification')) ? ($permission['pushnotification'] = 'true') : ($permission['pushnotification'] = 'false');
+        !empty($request->get('contacts')) ? ($permission['contacts'] = 'true') : ($permission['contacts'] = 'false');
+        !empty($request->get('transaction')) ? ($permission['transaction'] = 'true') : ($permission['transaction'] = 'false');
+        !empty($request->get('user')) ? ($permission['user'] = 'true') : ($permission['user'] = 'false');
+        // !empty($request->get('setting')) ? ($permission['setting'] = 'true') : ($permission['setting'] = 'false');
+        // !empty($request->get('admin')) ? ($permission['admin'] = 'true') : ($permission['admin'] = 'false');
+        $permission['setting'] = 'false';
+        $permission['admin'] = 'false';
+
         $admin->permissions = json_encode($permission);
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            $thumbName = Str::uuid() . '.' .$extension;
-            
+            $thumbName = Str::uuid() . '.' . $extension;
+
             $image->move('uploads/profile', $fileName);
-            $item_url = 'uploads/profile/'.$fileName;
+            $item_url = 'uploads/profile/' . $fileName;
             $admin->profile_pic = $item_url;
         }
-        
+
         $admin->save();
         return redirect()->route('admins.index');
     }
@@ -216,8 +225,8 @@ class AdminController extends Controller
     public function edit($id)
     {
         $data['admin'] = Admin::find($id);
-        $data['permission'] = json_decode($data['admin']['permissions'],true);
-        return view('admin.edit',$data);
+        $data['permission'] = json_decode($data['admin']['permissions'], true);
+        return view('admin.edit', $data);
     }
 
     /**
@@ -234,42 +243,42 @@ class AdminController extends Controller
             'email' => 'required',
             'password' => 'required',
         ]);
-        $admin =Admin::find($id);
+        $admin = Admin::find($id);
         $admin->username = $request->get('username');
         $admin->email = $request->get('email');
         $admin->password = Hash::make($request->get('password'));
-        
-        $permission = array();
-        !empty($request->get('section')) ? $permission['section']='true' : $permission['section']='false';
-        !empty($request->get('category')) ? $permission['category']='true' : $permission['category']='false';
-        !empty($request->get('posts')) ? $permission['posts']='true' : $permission['posts']='false';
-        !empty($request->get('greeting')) ? $permission['greeting']='true' : $permission['greeting']='false';
-        !empty($request->get('video')) ? $permission['video']='true' : $permission['video']='false';
-        !empty($request->get('slider')) ? $permission['slider']='true' : $permission['slider']='false';
-        !empty($request->get('frame')) ? $permission['frame']='true' : $permission['frame']='false';
-        !empty($request->get('subscription')) ? $permission['subscription']='true' : $permission['subscription']='false';
-        !empty($request->get('offerdialog')) ? $permission['offerdialog']='true' : $permission['offerdialog']='false';
-        !empty($request->get('pushnotification')) ? $permission['pushnotification']='true' : $permission['pushnotification']='false';
-        !empty($request->get('contacts')) ? $permission['contacts']='true' : $permission['contacts']='false';
-        !empty($request->get('transaction')) ? $permission['transaction']='true' : $permission['transaction']='false';
-        !empty($request->get('user')) ? $permission['user']='true' : $permission['user']='false';
-        !empty($request->get('setting')) ? $permission['setting']='true' : $permission['setting']='false';
-        !empty($request->get('admin')) ? $permission['admin']='true' : $permission['admin']='false';
-        
+
+        $permission = [];
+        !empty($request->get('section')) ? ($permission['section'] = 'true') : ($permission['section'] = 'false');
+        !empty($request->get('category')) ? ($permission['category'] = 'true') : ($permission['category'] = 'false');
+        !empty($request->get('posts')) ? ($permission['posts'] = 'true') : ($permission['posts'] = 'false');
+        !empty($request->get('greeting')) ? ($permission['greeting'] = 'true') : ($permission['greeting'] = 'false');
+        !empty($request->get('video')) ? ($permission['video'] = 'true') : ($permission['video'] = 'false');
+        !empty($request->get('slider')) ? ($permission['slider'] = 'true') : ($permission['slider'] = 'false');
+        !empty($request->get('frame')) ? ($permission['frame'] = 'true') : ($permission['frame'] = 'false');
+        !empty($request->get('subscription')) ? ($permission['subscription'] = 'true') : ($permission['subscription'] = 'false');
+        !empty($request->get('offerdialog')) ? ($permission['offerdialog'] = 'true') : ($permission['offerdialog'] = 'false');
+        !empty($request->get('pushnotification')) ? ($permission['pushnotification'] = 'true') : ($permission['pushnotification'] = 'false');
+        !empty($request->get('contacts')) ? ($permission['contacts'] = 'true') : ($permission['contacts'] = 'false');
+        !empty($request->get('transaction')) ? ($permission['transaction'] = 'true') : ($permission['transaction'] = 'false');
+        !empty($request->get('user')) ? ($permission['user'] = 'true') : ($permission['user'] = 'false');
+        !empty($request->get('setting')) ? ($permission['setting'] = 'true') : ($permission['setting'] = 'false');
+        !empty($request->get('admin')) ? ($permission['admin'] = 'true') : ($permission['admin'] = 'false');
+
         $admin->permissions = json_encode($permission);
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            $thumbName = Str::uuid() . '.' .$extension;
-            
+            $thumbName = Str::uuid() . '.' . $extension;
+
             $image->move('uploads/profile', $fileName);
-            $item_url = 'uploads/profile/'.$fileName;
+            $item_url = 'uploads/profile/' . $fileName;
             $admin->profile_pic = $item_url;
         }
-        
+
         $admin->save();
         return redirect()->route('admins.index');
     }

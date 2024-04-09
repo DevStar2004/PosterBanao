@@ -1,5 +1,9 @@
 @extends('main')
 
+@php
+    $is_permitted = App\Models\Admin::isPermission('setting') == 'true';
+@endphp
+
 @section('content')
     <div class="row">
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -8,966 +12,1034 @@
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
         <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card" style="min-height: 700px;">
-                        <div class="nav-wrapper position-relative end-0 px-2 pt-2">
-                            <ul class="nav nav-pills nav-fill p-1" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" role="tab" aria-selected="true" id="edit_profile_lay-tab"
-                                        aria-controls="edit_profile_lay" href="#edit_profile_lay">
-                                        <i class="fa fa-pen"></i>
-                                        <span class="ms-2">AppSetting</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" role="tab" aria-selected="false" id="refer_lay-tab"
-                                        aria-controls="refer_lay" href="#refer_lay">
-                                        <i class="fa fa-donate"></i>
-                                        <span class="ms-2">ReferEarn</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" role="tab" aria-selected="false" id="payment_lay-tab"
-                                        aria-controls="payment_lay" href="#payment_lay">
-                                        <i class="fa fa-credit-card"></i>
-                                        <span class="ms-2">Payment</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" role="tab" aria-selected="false" id="notifiacation_lay-tab"
-                                        aria-controls="notifiacation_lay" href="#notifiacation_lay">
-                                        <i class="fa fa-bell"></i>
-                                        <span class="ms-2">Notification</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" role="tab" aria-selected="false" id="Whatsapp_lay-tab"
-                                        aria-controls="whatsapp_lay" href="#whatsapp_lay">
-                                        <i class="fa fa-whatsapp"></i>
-                                        <span class="ms-2">Whatsapp</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" role="tab" aria-selected="false" id="ads_lay-tab"
-                                        aria-controls="ads_lay" href="#ads_lay">
-                                        <i class="fa fa-ad"></i>
-                                        <span class="ms-2">Ads</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" role="tab" aria-selected="false" id="storage_lay-tab"
-                                        aria-controls="storage_lay" href="#storage_lay">
-                                        <i class="fa fa-database"></i>
-                                        <span class="ms-2">Storage</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" role="tab" aria-selected="false" id="app_update_lay-tab"
-                                        aria-controls="app_update_lay" href="#app_update_lay">
-                                        <i class="fa fa-mobile-alt"></i>
-                                        <span class="ms-2">Update</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" role="tab" aria-selected="false" id="privacy_terms_lay-tab"
-                                        aria-controls="privacy_terms_lay" href="#privacy_terms_lay">
-                                        <i class="fa fa-list-alt"></i>
-                                        <span class="ms-2">Privacy</span>
-                                    </a>
-                                </li>
-                            </ul>
+            @if ($is_permitted)
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card" style="min-height: 700px;">
+                            <div class="nav-wrapper position-relative end-0 px-2 pt-2">
+                                <ul class="nav nav-pills nav-fill p-1" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center "
+                                            data-bs-toggle="tab" role="tab" aria-selected="true"
+                                            id="edit_profile_lay-tab" aria-controls="edit_profile_lay"
+                                            href="#edit_profile_lay">
+                                            <i class="fa fa-pen"></i>
+                                            <span class="ms-2">AppSetting</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
+                                            data-bs-toggle="tab" role="tab" aria-selected="false" id="refer_lay-tab"
+                                            aria-controls="refer_lay" href="#refer_lay">
+                                            <i class="fa fa-donate"></i>
+                                            <span class="ms-2">ReferEarn</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
+                                            data-bs-toggle="tab" role="tab" aria-selected="false" id="payment_lay-tab"
+                                            aria-controls="payment_lay" href="#payment_lay">
+                                            <i class="fa fa-credit-card"></i>
+                                            <span class="ms-2">Payment</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
+                                            data-bs-toggle="tab" role="tab" aria-selected="false"
+                                            id="notifiacation_lay-tab" aria-controls="notifiacation_lay"
+                                            href="#notifiacation_lay">
+                                            <i class="fa fa-bell"></i>
+                                            <span class="ms-2">Notification</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
+                                            data-bs-toggle="tab" role="tab" aria-selected="false" id="Whatsapp_lay-tab"
+                                            aria-controls="whatsapp_lay" href="#whatsapp_lay">
+                                            <i class="fa fa-whatsapp"></i>
+                                            <span class="ms-2">Whatsapp</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
+                                            data-bs-toggle="tab" role="tab" aria-selected="false" id="ads_lay-tab"
+                                            aria-controls="ads_lay" href="#ads_lay">
+                                            <i class="fa fa-ad"></i>
+                                            <span class="ms-2">Ads</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
+                                            data-bs-toggle="tab" role="tab" aria-selected="false" id="storage_lay-tab"
+                                            aria-controls="storage_lay" href="#storage_lay">
+                                            <i class="fa fa-database"></i>
+                                            <span class="ms-2">Storage</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
+                                            data-bs-toggle="tab" role="tab" aria-selected="false"
+                                            id="app_update_lay-tab" aria-controls="app_update_lay" href="#app_update_lay">
+                                            <i class="fa fa-mobile-alt"></i>
+                                            <span class="ms-2">Update</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
+                                            data-bs-toggle="tab" role="tab" aria-selected="false"
+                                            id="privacy_terms_lay-tab" aria-controls="privacy_terms_lay"
+                                            href="#privacy_terms_lay">
+                                            <i class="fa fa-list-alt"></i>
+                                            <span class="ms-2">Privacy</span>
+                                        </a>
+                                    </li>
+                                </ul>
 
-                            <div class="tab-content" id="animateLineContent-4">
-                                <div class="tab-pane fade show active" id="edit_profile_lay" role="tabpanel"
-                                    aria-labelledby="edit_profile_lay-tab">
-                                    <form method="post" action="{{ url('setting/app') }}" enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row p-5">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">App Name </label>
-                                                    <input class="form-control" name="app_name" type="text"
-                                                        value="{{ App\Models\Setting::getValue('app_name') }}">
+                                <div class="tab-content" id="animateLineContent-4">
+                                    <div class="tab-pane fade show active" id="edit_profile_lay" role="tabpanel"
+                                        aria-labelledby="edit_profile_lay-tab">
+                                        <form method="post" action="{{ url('setting/app') }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row p-5">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">App Name
+                                                        </label>
+                                                        <input class="form-control" name="app_name" type="text"
+                                                            value="{{ App\Models\Setting::getValue('app_name') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Company
-                                                        Name</label>
-                                                    <input class="form-control" name="company_name" type="text"
-                                                        value="{{ App\Models\Setting::getValue('company_name') }}">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Company
+                                                            Name</label>
+                                                        <input class="form-control" name="company_name" type="text"
+                                                            value="{{ App\Models\Setting::getValue('company_name') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">App Logo</label>
-                                                    <input class="form-control" id="appLogo" onchange="appLogoChange()"
-                                                        name="app_logo" type="file">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">App
+                                                            Logo</label>
+                                                        <input class="form-control" id="appLogo"
+                                                            onchange="appLogoChange()" name="app_logo" type="file">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Company
-                                                        Logo</label>
-                                                    <input class="form-control" id="companyLogo"
-                                                        onchange="companyLogoChange()" name="company_logo"
-                                                        type="file">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Company
+                                                            Logo</label>
+                                                        <input class="form-control" id="companyLogo"
+                                                            onchange="companyLogoChange()" name="company_logo"
+                                                            type="file">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6" id="previewAppLogo">
-                                                <div class="form-group">
-                                                    <div class='imageCard col-xl-2 col-sm-3 mb-2'>
-                                                        <div class='avatar avatar-xxl position-relative'>
-                                                            <img src="{{ App\Models\Setting::getValue('app_logo') }}"
-                                                                id='frameImage' class='border-radius-md' alt='team-2'>
+                                                <div class="col-md-6" id="previewAppLogo">
+                                                    <div class="form-group">
+                                                        <div class='imageCard col-xl-2 col-sm-3 mb-2'>
+                                                            <div class='avatar avatar-xxl position-relative'>
+                                                                <img src="{{ App\Models\Setting::getValue('app_logo') }}"
+                                                                    id='frameImage' class='border-radius-md'
+                                                                    alt='team-2'>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group" id="previewCompanyLogo">
-                                                    <div class='imageCard col-xl-2 col-sm-3 mb-2'>
-                                                        <div class='avatar avatar-xxl position-relative'>
-                                                            <img src="{{ App\Models\Setting::getValue('company_logo') }}"
-                                                                id='frameImage' class='border-radius-md' alt='team-2'>
+                                                <div class="col-md-6">
+                                                    <div class="form-group" id="previewCompanyLogo">
+                                                        <div class='imageCard col-xl-2 col-sm-3 mb-2'>
+                                                            <div class='avatar avatar-xxl position-relative'>
+                                                                <img src="{{ App\Models\Setting::getValue('company_logo') }}"
+                                                                    id='frameImage' class='border-radius-md'
+                                                                    alt='team-2'>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Share
-                                                        Image</label>
-                                                    <input class="form-control" id="shareImage"
-                                                        onchange="shareImageChange()" name="share_image" type="file">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Share
+                                                            Image</label>
+                                                        <input class="form-control" id="shareImage"
+                                                            onchange="shareImageChange()" name="share_image"
+                                                            type="file">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Share Text</label>
-                                                    <textarea class="form-control" name="share_text" type="text" value="">{{ App\Models\Setting::getValue('share_text') }}</textarea>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Share
+                                                            Text</label>
+                                                        <textarea class="form-control" name="share_text" type="text" value="">{{ App\Models\Setting::getValue('share_text') }}</textarea>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6" id="previewShareImage">
-                                                <div class="form-group">
-                                                    <div class='imageCard col-xl-2 col-sm-3 mb-2'>
-                                                        <div class='avatar avatar-xxl position-relative'>
-                                                            <img src="{{ App\Models\Setting::getValue('share_image_url') }}"
-                                                                id='frameImage' class='border-radius-md' alt='team-2'>
+                                                <div class="col-md-6" id="previewShareImage">
+                                                    <div class="form-group">
+                                                        <div class='imageCard col-xl-2 col-sm-3 mb-2'>
+                                                            <div class='avatar avatar-xxl position-relative'>
+                                                                <img src="{{ App\Models\Setting::getValue('share_image_url') }}"
+                                                                    id='frameImage' class='border-radius-md'
+                                                                    alt='team-2'>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Contact Number
-                                                    </label>
-                                                    <input class="form-control" name="contact_number" type="text"
-                                                        value="{{ App\Models\Setting::getValue('contact_number') }}">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Contact Number
+                                                        </label>
+                                                        <input class="form-control" name="contact_number" type="text"
+                                                            value="{{ App\Models\Setting::getValue('contact_number') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Contact
-                                                        Email</label>
-                                                    <input class="form-control" name="contact_email" type="text"
-                                                        value="{{ App\Models\Setting::getValue('contact_email') }}">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Contact
+                                                            Email</label>
+                                                        <input class="form-control" name="contact_email" type="text"
+                                                            value="{{ App\Models\Setting::getValue('contact_email') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Api Key </label>
-                                                    <input class="form-control" name="api_key" type="text"
-                                                        disabled="disabled" value="{{ env('API_KEY', '') }}">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Api Key
+                                                        </label>
+                                                        <input class="form-control" name="api_key" type="text"
+                                                            disabled="disabled" value="{{ env('API_KEY', '') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Currency</label>
-                                                    <select class="form-control" name="currency" id="currency"
-                                                        name="currency">
-                                                        <option value="INR">Rupees</option>
-                                                        <option value="USD"
-                                                            @if (App\Models\Setting::getValue('currency') == 'USD') selected @endif>USD</option>
-                                                    </select>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center"
+                                                            class="form-control-label">Currency</label>
+                                                        <select class="form-control" name="currency" id="currency"
+                                                            name="currency">
+                                                            <option value="INR">Rupees</option>
+                                                            <option value="USD"
+                                                                @if (App\Models\Setting::getValue('currency') == 'USD') selected @endif>USD
+                                                            </option>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Timezone</label>
-                                                    <select class="form-control" name="timezone" id="timezoneSpiner"
-                                                        name="timezone">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center"
+                                                            class="form-control-label">Timezone</label>
+                                                        <select class="form-control" name="timezone" id="timezoneSpiner"
+                                                            name="timezone">
 
-                                                    </select>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    @if (Session::get('admin_type') == 'Demo')
-                                                        <div class="form-control btn btn-primary demo_action">Submit</div>
-                                                    @else
-                                                        <input class="form-control btn btn-primary" type="submit"
-                                                            value="Update">
-                                                    @endif
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @if (Session::get('admin_type') == 'Demo')
+                                                            <div class="form-control btn btn-primary demo_action">Submit
+                                                            </div>
+                                                        @else
+                                                            <input class="form-control btn btn-primary" type="submit"
+                                                                value="Update">
+                                                        @endif
+                                                    </div>
                                                 </div>
-                                            </div>
-
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <div class="tab-pane fade" id="refer_lay" role="tabpanel"
-                                    aria-labelledby="refer_lay-tab">
-                                    <form method="post" action="{{ url('setting/referearn') }}"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row p-5">
-                                            <div class="col-md-12">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="refer_earn" type="checkbox"
-                                                        id="rememberMe" @if (App\Models\Setting::getValue('refer_earn') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label" for="rememberMe">Refer &
-                                                        Earn</label>
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Refer
-                                                        Bonus</label>
-                                                    <input class="form-control" name="refer_bonus" type="text"
-                                                        value="{{ App\Models\Setting::getValue('refer_bonus') }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
 
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Refer Subscription
-                                                        Bonus(%)</label>
-                                                    <input class="form-control" name="refer_subscription_bonus"
-                                                        type="text"
-                                                        value="{{ App\Models\Setting::getValue('refer_subscription_bonus') }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
+                                        </form>
+                                    </div>
 
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Minimum
-                                                        Withdraw</label>
-                                                    <input class="form-control" name="min_withdraw" type="text"
-                                                        value="{{ App\Models\Setting::getValue('min_withdraw') }}">
+                                    <div class="tab-pane fade" id="refer_lay" role="tabpanel"
+                                        aria-labelledby="refer_lay-tab">
+                                        <form method="post" action="{{ url('setting/referearn') }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row p-5">
+                                                <div class="col-md-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="refer_earn" type="checkbox"
+                                                            id="rememberMe"
+                                                            @if (App\Models\Setting::getValue('refer_earn') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label" for="rememberMe">Refer
+                                                            &
+                                                            Earn</label>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <hr>
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Refer
+                                                            Bonus</label>
+                                                        <input class="form-control" name="refer_bonus" type="text"
+                                                            value="{{ App\Models\Setting::getValue('refer_bonus') }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
 
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Refer
+                                                            Subscription
+                                                            Bonus(%)</label>
+                                                        <input class="form-control" name="refer_subscription_bonus"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('refer_subscription_bonus') }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
 
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    @if (Session::get('admin_type') == 'Demo')
-                                                        <div class="form-control btn btn-primary demo_action">Submit</div>
-                                                    @else
-                                                        <input class="form-control btn btn-primary" type="submit"
-                                                            value="Update">
-                                                    @endif
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <div class="tab-pane fade" id="payment_lay" role="tabpanel"
-                                    aria-labelledby="payment_lay-tab">
-                                    <form method="post" action="{{ url('setting/payment') }}"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row p-5">
-                                            <div class="col-md-6">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="posts_limit_status"
-                                                        type="checkbox" id="posts_limit_status"
-                                                        @if (App\Models\Setting::getValue('posts_limit_status') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label"
-                                                        for="posts_limit_status">Show Posts Limit</label>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Minimum
+                                                            Withdraw</label>
+                                                        <input class="form-control" name="min_withdraw" type="text"
+                                                            value="{{ App\Models\Setting::getValue('min_withdraw') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="watch_and_remove_watermark"
-                                                        type="checkbox" id="watch_and_remove_watermark"
-                                                        @if (App\Models\Setting::getValue('watch_and_remove_watermark') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label"
-                                                        for="watch_and_remove_watermark">Watch And Remove Watermark</label>
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="buy_singal_post"
-                                                        type="checkbox" id="buy_singal_post"
-                                                        @if (App\Models\Setting::getValue('buy_singal_post') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label" for="buy_singal_post">Buy
-                                                        Single Post</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Single Post Buying
-                                                        Price</label>
-                                                    <input class="form-control" name="single_post_subsciption_amount"
-                                                        type="text"
-                                                        value="{{ App\Models\Setting::getValue('single_post_subsciption_amount') }}">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-12">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="paytm" type="checkbox"
-                                                        id="rememberMe" @if (App\Models\Setting::getValue('paytm') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label"
-                                                        for="rememberMe">Paytm</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Merchant
-                                                        Key</label>
-                                                    <input class="form-control" name="paytm_merchant_key" type="text"
-                                                        value="{{ App\Models\Setting::getValue('paytm_merchant_key') }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Merchant
-                                                        Id</label>
-                                                    <input class="form-control" name="paytm_merchant_id" type="text"
-                                                        value="{{ App\Models\Setting::getValue('paytm_merchant_id') }}">
-                                                </div>
-                                            </div>
 
 
-                                            <hr>
-                                            <hr>
-                                            <div class="col-md-12">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="razorpay" type="checkbox"
-                                                        id="rememberMe" @if (App\Models\Setting::getValue('razorpay') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label" for="rememberMe">Razorpay
-                                                        Payment</label>
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @if (Session::get('admin_type') == 'Demo')
+                                                            <div class="form-control btn btn-primary demo_action">Submit
+                                                            </div>
+                                                        @else
+                                                            <input class="form-control btn btn-primary" type="submit"
+                                                                value="Update">
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <hr>
+                                        </form>
+                                    </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Razorpay
-                                                        Key</label>
-                                                    <input class="form-control" name="razorpay_key" type="text"
-                                                        value="{{ App\Models\Setting::getValue('razorpay_key') }}">
+                                    <div class="tab-pane fade" id="payment_lay" role="tabpanel"
+                                        aria-labelledby="payment_lay-tab">
+                                        <form method="post" action="{{ url('setting/payment') }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row p-5">
+                                                <div class="col-md-6">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="posts_limit_status"
+                                                            type="checkbox" id="posts_limit_status"
+                                                            @if (App\Models\Setting::getValue('posts_limit_status') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label"
+                                                            for="posts_limit_status">Show Posts Limit</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Razorpay
-                                                        Secret</label>
-                                                    <input class="form-control" name="razorpay_secret" type="text"
-                                                        value="{{ App\Models\Setting::getValue('razorpay_secret') }}">
+                                                <div class="col-md-6">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="watch_and_remove_watermark"
+                                                            type="checkbox" id="watch_and_remove_watermark"
+                                                            @if (App\Models\Setting::getValue('watch_and_remove_watermark') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label"
+                                                            for="watch_and_remove_watermark">Watch And Remove
+                                                            Watermark</label>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="buy_singal_post"
+                                                            type="checkbox" id="buy_singal_post"
+                                                            @if (App\Models\Setting::getValue('buy_singal_post') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label"
+                                                            for="buy_singal_post">Buy
+                                                            Single Post</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Single Post
+                                                            Buying
+                                                            Price</label>
+                                                        <input class="form-control" name="single_post_subsciption_amount"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('single_post_subsciption_amount') }}">
+                                                    </div>
+                                                </div>
 
-                                            <hr>
-                                            <hr>
-                                            <div class="col-md-12">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="instamojo" type="checkbox"
-                                                        id="rememberMe" @if (App\Models\Setting::getValue('instamojo') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label" for="rememberMe">Instamojo
-                                                        Payment</label>
+                                                <div class="col-md-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="paytm" type="checkbox"
+                                                            id="rememberMe"
+                                                            @if (App\Models\Setting::getValue('paytm') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label"
+                                                            for="rememberMe">Paytm</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Merchant
+                                                            Key</label>
+                                                        <input class="form-control" name="paytm_merchant_key"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('paytm_merchant_key') }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Merchant
+                                                            Id</label>
+                                                        <input class="form-control" name="paytm_merchant_id"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('paytm_merchant_id') }}">
+                                                    </div>
+                                                </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Client Id</label>
-                                                    <input class="form-control" name="client_id" type="text"
-                                                        value="{{ App\Models\Setting::getValue('client_id') }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Client
-                                                        Secret</label>
-                                                    <input class="form-control" name="client_secret" type="text"
-                                                        value="{{ App\Models\Setting::getValue('client_secret') }}">
-                                                </div>
-                                            </div>
 
-                                            <hr>
-                                            <hr>
-                                            <div class="col-md-12">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="stripe" type="checkbox"
-                                                        id="rememberMe" @if (App\Models\Setting::getValue('stripe') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label" for="rememberMe">Stripe
-                                                        Payment</label>
+                                                <hr>
+                                                <hr>
+                                                <div class="col-md-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="razorpay" type="checkbox"
+                                                            id="rememberMe"
+                                                            @if (App\Models\Setting::getValue('razorpay') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label"
+                                                            for="rememberMe">Razorpay
+                                                            Payment</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <hr>
+                                                <hr>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Stripe Public
-                                                        Key</label>
-                                                    <input class="form-control" name="stripe_public_key" type="text"
-                                                        value="{{ App\Models\Setting::getValue('stripe_public_key') }}">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Razorpay
+                                                            Key</label>
+                                                        <input class="form-control" name="razorpay_key" type="text"
+                                                            value="{{ App\Models\Setting::getValue('razorpay_key') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Stripe Secret
-                                                        Key</label>
-                                                    <input class="form-control" name="stripe_secret_key" type="text"
-                                                        value="{{ App\Models\Setting::getValue('stripe_secret_key') }}">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Razorpay
+                                                            Secret</label>
+                                                        <input class="form-control" name="razorpay_secret" type="text"
+                                                            value="{{ App\Models\Setting::getValue('razorpay_secret') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <hr>
-                                            <hr>
-                                            <div class="col-md-12">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="offline_payment"
-                                                        type="checkbox" @if (App\Models\Setting::getValue('offline_payment') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label">Offline Payment</label>
+                                                <hr>
+                                                <hr>
+                                                <div class="col-md-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="instamojo" type="checkbox"
+                                                            id="rememberMe"
+                                                            @if (App\Models\Setting::getValue('instamojo') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label"
+                                                            for="rememberMe">Instamojo
+                                                            Payment</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <hr>
+                                                <hr>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Offline Payment
-                                                        Details</label>
-                                                    <textarea class="form-control" name="offline_details" type="text">{{ App\Models\Setting::getValue('offline_details') }}</textarea>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Client
+                                                            Id</label>
+                                                        <input class="form-control" name="client_id" type="text"
+                                                            value="{{ App\Models\Setting::getValue('client_id') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Client
+                                                            Secret</label>
+                                                        <input class="form-control" name="client_secret" type="text"
+                                                            value="{{ App\Models\Setting::getValue('client_secret') }}">
+                                                    </div>
+                                                </div>
 
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    @if (Session::get('admin_type') == 'Demo')
-                                                        <div class="form-control btn btn-primary demo_action">Submit</div>
-                                                    @else
-                                                        <input class="form-control btn btn-primary" type="submit"
-                                                            value="Update">
-                                                    @endif
+                                                <hr>
+                                                <hr>
+                                                <div class="col-md-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="stripe" type="checkbox"
+                                                            id="rememberMe"
+                                                            @if (App\Models\Setting::getValue('stripe') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label"
+                                                            for="rememberMe">Stripe
+                                                            Payment</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
+                                                <hr>
 
-                                <div class="tab-pane fade" id="notifiacation_lay" role="tabpanel"
-                                    aria-labelledby="notifiacation_lay-tab">
-                                    <form method="post" action="{{ url('setting/notification') }}"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row p-5">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Stripe Public
+                                                            Key</label>
+                                                        <input class="form-control" name="stripe_public_key"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('stripe_public_key') }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Stripe Secret
+                                                            Key</label>
+                                                        <input class="form-control" name="stripe_secret_key"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('stripe_secret_key') }}">
+                                                    </div>
+                                                </div>
 
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">FCM Key</label>
-                                                    <input class="form-control" name="fcm_key" type="text"
-                                                        value="{{ App\Models\Setting::getValue('fcm_key') }}">
+                                                <hr>
+                                                <hr>
+                                                <div class="col-md-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="offline_payment"
+                                                            type="checkbox"
+                                                            @if (App\Models\Setting::getValue('offline_payment') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label">Offline Payment</label>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <hr>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">OneSignal App
-                                                        Id</label>
-                                                    <input class="form-control" name="onesignal_app_id" type="text"
-                                                        value="{{ App\Models\Setting::getValue('onesignal_app_id') }}">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Offline
+                                                            Payment
+                                                            Details</label>
+                                                        <textarea class="form-control" name="offline_details" type="text">{{ App\Models\Setting::getValue('offline_details') }}</textarea>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">OneSignal Rest
-                                                        Key</label>
-                                                    <input class="form-control" name="onesignal_key" type="text"
-                                                        value="{{ App\Models\Setting::getValue('onesignal_key') }}">
-                                                </div>
-                                            </div>
 
-                                            <div class="col-md-12">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="auto_festival_notification"
-                                                        type="checkbox" @if (App\Models\Setting::getValue('auto_festival_notification') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label">Auto Festival
-                                                        Notification</label>
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @if (Session::get('admin_type') == 'Demo')
+                                                            <div class="form-control btn btn-primary demo_action">Submit
+                                                            </div>
+                                                        @else
+                                                            <input class="form-control btn btn-primary" type="submit"
+                                                                value="Update">
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    @if (Session::get('admin_type') == 'Demo')
-                                                        <div class="form-control btn btn-primary demo_action">Submit</div>
-                                                    @else
-                                                        <input class="form-control btn btn-primary" type="submit"
-                                                            value="Update">
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
+                                        </form>
+                                    </div>
 
-                                <div class="tab-pane fade" id="whatsapp_lay" role="tabpanel"
-                                    aria-labelledby="whatsapp_lay-tab">
-                                    <form method="post" action="{{ url('setting/whatsapp') }}"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row p-5">
+                                    <div class="tab-pane fade" id="notifiacation_lay" role="tabpanel"
+                                        aria-labelledby="notifiacation_lay-tab">
+                                        <form method="post" action="{{ url('setting/notification') }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row p-5">
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Api Key</label>
-                                                    <input class="form-control" name="whatsapp_api_key" type="text"
-                                                        value="{{ App\Models\Setting::getValue('whatsapp_api_key') }}">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">FCM
+                                                            Key</label>
+                                                        <input class="form-control" name="fcm_key" type="text"
+                                                            value="{{ App\Models\Setting::getValue('fcm_key') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Instance
-                                                        id</label>
-                                                    <input class="form-control" name="whatsapp_instance_key"
-                                                        type="text"
-                                                        value="{{ App\Models\Setting::getValue('whatsapp_instance_id') }}">
-                                                </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="whatsapp_otp" type="checkbox"
-                                                        id="whatsapp_otp"
-                                                        @if (App\Models\Setting::getValue('whatsapp_otp') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label"
-                                                        for="whatsapp_otp">Whatsapp Otp Authentication</label>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">OneSignal App
+                                                            Id</label>
+                                                        <input class="form-control" name="onesignal_app_id"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('onesignal_app_id') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <hr>
-                                            <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">OneSignal Rest
+                                                            Key</label>
+                                                        <input class="form-control" name="onesignal_key" type="text"
+                                                            value="{{ App\Models\Setting::getValue('onesignal_key') }}">
+                                                    </div>
+                                                </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    @if (Session::get('admin_type') == 'Demo')
-                                                        <div class="form-control btn btn-primary demo_action">Submit</div>
-                                                    @else
-                                                        <input class="form-control btn btn-primary" type="submit"
-                                                            value="Update">
-                                                    @endif
+                                                <div class="col-md-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="auto_festival_notification"
+                                                            type="checkbox"
+                                                            @if (App\Models\Setting::getValue('auto_festival_notification') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label">Auto Festival
+                                                            Notification</label>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @if (Session::get('admin_type') == 'Demo')
+                                                            <div class="form-control btn btn-primary demo_action">Submit
+                                                            </div>
+                                                        @else
+                                                            <input class="form-control btn btn-primary" type="submit"
+                                                                value="Update">
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
-                                </div>
+                                        </form>
+                                    </div>
 
-                                <div class="tab-pane fade" id="ads_lay" role="tabpanel" aria-labelledby="ads_lay-tab">
-                                    <form method="post" action="{{ url('setting/ads') }}"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row p-5">
-                                            <div class="col-md-6">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="show_ads" type="checkbox"
-                                                        id="rememberMe" @if (App\Models\Setting::getValue('show_ads') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label" for="rememberMe">Show
-                                                        Ads</label>
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <hr>
+                                    <div class="tab-pane fade" id="whatsapp_lay" role="tabpanel"
+                                        aria-labelledby="whatsapp_lay-tab">
+                                        <form method="post" action="{{ url('setting/whatsapp') }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row p-5">
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Ad Network</label>
-                                                    <select class="form-control" name="ad_network" id="ad_network"
-                                                        name="ad_network">
-                                                        <option value="admob">Admob</option>
-                                                    </select>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Api
+                                                            Key</label>
+                                                        <input class="form-control" name="whatsapp_api_key"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('whatsapp_api_key') }}">
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Instance
+                                                            id</label>
+                                                        <input class="form-control" name="whatsapp_instance_key"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('whatsapp_instance_id') }}">
+                                                    </div>
+                                                </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Admob App
-                                                        Id</label>
-                                                    <input class="form-control" name="publisher_id" type="text"
-                                                        value="{{ App\Models\Setting::getValue('publisher_id') }}"
-                                                        required>
+                                                <div class="col-md-6">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="whatsapp_otp"
+                                                            type="checkbox" id="whatsapp_otp"
+                                                            @if (App\Models\Setting::getValue('whatsapp_otp') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label"
+                                                            for="whatsapp_otp">Whatsapp Otp Authentication</label>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <hr>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @if (Session::get('admin_type') == 'Demo')
+                                                            <div class="form-control btn btn-primary demo_action">Submit
+                                                            </div>
+                                                        @else
+                                                            <input class="form-control btn btn-primary" type="submit"
+                                                                value="Update">
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="card mb-2">
-                                                    <div class="card-header py-0 px-0 bg-primary">
-                                                        <div class="d-flex align-items-center card-header py-2 px-2"
-                                                            style="background:#FF003E">
-                                                            <label class="text-white mt-2">Admob Banner</label>
-                                                            <div class="ms-auto my-2">
-                                                                <div class="form-check form-switch ">
-                                                                    <input class="form-check-input"
-                                                                        name="show_admob_banner" type="checkbox"
-                                                                        id="rememberMe"
-                                                                        @if (App\Models\Setting::getValue('show_admob_banner') == 'true') checked @endif>
+                                        </form>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="ads_lay" role="tabpanel"
+                                        aria-labelledby="ads_lay-tab">
+                                        <form method="post" action="{{ url('setting/ads') }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row p-5">
+                                                <div class="col-md-6">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="show_ads" type="checkbox"
+                                                            id="rememberMe"
+                                                            @if (App\Models\Setting::getValue('show_ads') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label" for="rememberMe">Show
+                                                            Ads</label>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <hr>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Ad
+                                                            Network</label>
+                                                        <select class="form-control" name="ad_network" id="ad_network"
+                                                            name="ad_network">
+                                                            <option value="admob">Admob</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Admob App
+                                                            Id</label>
+                                                        <input class="form-control" name="publisher_id" type="text"
+                                                            value="{{ App\Models\Setting::getValue('publisher_id') }}"
+                                                            required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="card mb-2">
+                                                        <div class="card-header py-0 px-0 bg-primary">
+                                                            <div class="d-flex align-items-center card-header py-2 px-2"
+                                                                style="background:#FF003E">
+                                                                <label class="text-white mt-2">Admob Banner</label>
+                                                                <div class="ms-auto my-2">
+                                                                    <div class="form-check form-switch ">
+                                                                        <input class="form-check-input"
+                                                                            name="show_admob_banner" type="checkbox"
+                                                                            id="rememberMe"
+                                                                            @if (App\Models\Setting::getValue('show_admob_banner') == 'true') checked @endif>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div>
+                                                                <div class="form-group">
+                                                                    <input class="form-control" name="admob_banner_id"
+                                                                        required type="text"
+                                                                        placeholder="Banner Id"value="{{ App\Models\Setting::getValue('admob_banner_id') }} ">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="card-body">
-                                                        <div>
-                                                            <div class="form-group">
-                                                                <input class="form-control" name="admob_banner_id"
-                                                                    required type="text"
-                                                                    placeholder="Banner Id"value="{{ App\Models\Setting::getValue('admob_banner_id') }} ">
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="card mb-2">
+                                                        <div class="card-header py-0 px-0 bg-primary">
+                                                            <div class="d-flex align-items-center card-header py-2 px-2"
+                                                                style="background:#FF003E">
+                                                                <label class="text-white mt-2">Admob Interstitial</label>
+                                                                <div class="ms-auto my-2">
+                                                                    <div class="form-check form-switch ">
+                                                                        <input class="form-check-input"
+                                                                            name="show_admob_interstital" type="checkbox"
+                                                                            id="rememberMe"
+                                                                            @if (App\Models\Setting::getValue('show_admob_interstital') == 'true') checked @endif>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="card mb-2">
-                                                    <div class="card-header py-0 px-0 bg-primary">
-                                                        <div class="d-flex align-items-center card-header py-2 px-2"
-                                                            style="background:#FF003E">
-                                                            <label class="text-white mt-2">Admob Interstitial</label>
-                                                            <div class="ms-auto my-2">
-                                                                <div class="form-check form-switch ">
-                                                                    <input class="form-check-input"
-                                                                        name="show_admob_interstital" type="checkbox"
-                                                                        id="rememberMe"
-                                                                        @if (App\Models\Setting::getValue('show_admob_interstital') == 'true') checked @endif>
+                                                        <div class="card-body">
+                                                            <div>
+                                                                <div class="form-group">
+                                                                    <input class="form-control"
+                                                                        name="admob_interstitial_ad" type="text"
+                                                                        placeholder="Interstitial Id"value="{{ App\Models\Setting::getValue('admob_interstitial_ad') }}"
+                                                                        required>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="card-body">
-                                                        <div>
-                                                            <div class="form-group">
-                                                                <input class="form-control" name="admob_interstitial_ad"
-                                                                    type="text"
-                                                                    placeholder="Interstitial Id"value="{{ App\Models\Setting::getValue('admob_interstitial_ad') }}"
-                                                                    required>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="card mb-2">
+                                                        <div class="card-header py-0 px-0 bg-primary">
+                                                            <div class="d-flex align-items-center card-header py-2 px-2"
+                                                                style="background:#FF003E">
+                                                                <label class="text-white mt-2">Admob Rewarded</label>
+                                                                <div class="ms-auto my-2">
+                                                                    <div class="form-check form-switch ">
+                                                                        <input class="form-check-input"
+                                                                            name="show_admob_rewarded" type="checkbox"
+                                                                            id="rememberMe"
+                                                                            @if (App\Models\Setting::getValue('show_admob_rewarded') == 'true') checked @endif>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="card mb-2">
-                                                    <div class="card-header py-0 px-0 bg-primary">
-                                                        <div class="d-flex align-items-center card-header py-2 px-2"
-                                                            style="background:#FF003E">
-                                                            <label class="text-white mt-2">Admob Rewarded</label>
-                                                            <div class="ms-auto my-2">
-                                                                <div class="form-check form-switch ">
-                                                                    <input class="form-check-input"
-                                                                        name="show_admob_rewarded" type="checkbox"
-                                                                        id="rememberMe"
-                                                                        @if (App\Models\Setting::getValue('show_admob_rewarded') == 'true') checked @endif>
+                                                        <div class="card-body">
+                                                            <div>
+                                                                <div class="form-group">
+                                                                    <input class="form-control" name="admob_rewarde_id"
+                                                                        type="text"
+                                                                        placeholder="Rewarded Id"value="{{ App\Models\Setting::getValue('admob_rewarde_id') }}"
+                                                                        required>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="card-body">
-                                                        <div>
-                                                            <div class="form-group">
-                                                                <input class="form-control" name="admob_rewarde_id"
-                                                                    type="text"
-                                                                    placeholder="Rewarded Id"value="{{ App\Models\Setting::getValue('admob_rewarde_id') }}"
-                                                                    required>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="card mb-2">
+                                                        <div class="card-header py-0 px-0 bg-primary">
+                                                            <div class="d-flex align-items-center card-header py-2 px-2"
+                                                                style="background:#FF003E">
+                                                                <label class="text-white mt-2">Admob Native</label>
+                                                                <div class="ms-auto my-2">
+                                                                    <div class="form-check form-switch ">
+                                                                        <input class="form-check-input"
+                                                                            name="show_admob_native" type="checkbox"
+                                                                            id="rememberMe"
+                                                                            @if (App\Models\Setting::getValue('show_admob_native') == 'true') checked @endif>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="card mb-2">
-                                                    <div class="card-header py-0 px-0 bg-primary">
-                                                        <div class="d-flex align-items-center card-header py-2 px-2"
-                                                            style="background:#FF003E">
-                                                            <label class="text-white mt-2">Admob Native</label>
-                                                            <div class="ms-auto my-2">
-                                                                <div class="form-check form-switch ">
-                                                                    <input class="form-check-input"
-                                                                        name="show_admob_native" type="checkbox"
-                                                                        id="rememberMe"
-                                                                        @if (App\Models\Setting::getValue('show_admob_native') == 'true') checked @endif>
+                                                        <div class="card-body">
+                                                            <div>
+                                                                <div class="form-group">
+                                                                    <input class="form-control" name="admob_native_id"
+                                                                        type="text"
+                                                                        placeholder="Native Id"value="{{ App\Models\Setting::getValue('admob_native_id') }}"
+                                                                        required>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="card-body">
-                                                        <div>
-                                                            <div class="form-group">
-                                                                <input class="form-control" name="admob_native_id"
-                                                                    type="text"
-                                                                    placeholder="Native Id"value="{{ App\Models\Setting::getValue('admob_native_id') }}"
-                                                                    required>
+                                                </div>
+
+
+                                                <div class="col-md-6 mt-5">
+                                                    <div class="form-group">
+                                                        @if (Session::get('admin_type') == 'Demo')
+                                                            <div class="form-control btn btn-primary demo_action">Submit
                                                             </div>
-                                                        </div>
+                                                        @else
+                                                            <input class="form-control btn btn-primary" type="submit"
+                                                                value="Update">
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
+                                        </form>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="storage_lay" role="tabpanel"
+                                        aria-labelledby="storage_lay-tab">
+                                        <form method="post" action="{{ url('setting/storage') }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row p-5">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center"
+                                                            class="form-control-label">Storage</label>
+                                                        <select class="form-control" name="storage_type"
+                                                            onchange="storageChange()" id="storage_type"
+                                                            name="storage_type">
+                                                            <option value="local">Local</option>
+                                                            <option value="digitalOccean"
+                                                                @if (App\Models\Setting::getValue('storage_type') == 'digitalOccean') selected @endif>
+                                                                DigitalOccean</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
 
 
-                                            <div class="col-md-6 mt-5">
-                                                <div class="form-group">
-                                                    @if (Session::get('admin_type') == 'Demo')
-                                                        <div class="form-control btn btn-primary demo_action">Submit</div>
-                                                    @else
-                                                        <input class="form-control btn btn-primary" type="submit"
-                                                            value="Update">
-                                                    @endif
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">DigitalOcean
+                                                            Bucket Name</label>
+                                                        <input class="form-control" name="do_space_name"
+                                                            id="do_space_name" type="text"
+                                                            value="{{ env('DO_SPACES_BUCKET') }}" required>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
 
-                                <div class="tab-pane fade" id="storage_lay" role="tabpanel"
-                                    aria-labelledby="storage_lay-tab">
-                                    <form method="post" action="{{ url('setting/storage') }}"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row p-5">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Storage</label>
-                                                    <select class="form-control" name="storage_type"
-                                                        onchange="storageChange()" id="storage_type" name="storage_type">
-                                                        <option value="local">Local</option>
-                                                        <option value="digitalOccean"
-                                                            @if (App\Models\Setting::getValue('storage_type') == 'digitalOccean') selected @endif>
-                                                            DigitalOccean</option>
-                                                    </select>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">DigitalOcean
+                                                            Space
+                                                            Key</label>
+                                                        <input class="form-control" name="do_key" id="do_key"
+                                                            type="text" value="{{ env('DO_SPACES_KEY') }}" required>
+                                                    </div>
                                                 </div>
-                                            </div>
 
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">DigitalOcean
+                                                            Space
+                                                            Secret</label>
+                                                        <input class="form-control" name="do_secret" id="do_secret"
+                                                            type="text" value="{{ env('DO_SPACES_SECRET') }}"
+                                                            required>
+                                                    </div>
+                                                </div>
 
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">DigitalOcean
-                                                        Bucket Name</label>
-                                                    <input class="form-control" name="do_space_name" id="do_space_name"
-                                                        type="text" value="{{ env('DO_SPACES_BUCKET') }}" required>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">DigitalOcean
+                                                            Bucket Region</label>
+                                                        <input class="form-control" name="do_bucket_region"
+                                                            id="do_bucket_region" type="text"
+                                                            value="{{ env('DO_SPACES_REGION') }}" required>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">DigitalOcean Space
-                                                        Key</label>
-                                                    <input class="form-control" name="do_key" id="do_key"
-                                                        type="text" value="{{ env('DO_SPACES_KEY') }}" required>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">DigitalOcean
+                                                            Space
+                                                            Url</label>
+                                                        <input class="form-control" name="do_space_url" id="do_space_url"
+                                                            type="text" value="{{ env('DO_SPACES_URL') }}" required>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">DigitalOcean Space
-                                                        Secret</label>
-                                                    <input class="form-control" name="do_secret" id="do_secret"
-                                                        type="text" value="{{ env('DO_SPACES_SECRET') }}" required>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">DigitalOcean
+                                                            Space
+                                                            Endpoint</label>
+                                                        <input class="form-control" name="do_end_point" id="do_end_point"
+                                                            type="text" value="{{ env('DO_SPACES_ENDPOINT') }}"
+                                                            required>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">DigitalOcean
-                                                        Bucket Region</label>
-                                                    <input class="form-control" name="do_bucket_region"
-                                                        id="do_bucket_region" type="text"
-                                                        value="{{ env('DO_SPACES_REGION') }}" required>
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @if (Session::get('admin_type') == 'Demo')
+                                                            <div class="form-control btn btn-primary demo_action">Submit
+                                                            </div>
+                                                        @else
+                                                            <input class="form-control btn btn-primary" type="submit"
+                                                                value="Update">
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
+                                        </form>
+                                    </div>
 
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">DigitalOcean Space
-                                                        Url</label>
-                                                    <input class="form-control" name="do_space_url" id="do_space_url"
-                                                        type="text" value="{{ env('DO_SPACES_URL') }}" required>
+                                    <div class="tab-pane fade" id="app_update_lay" role="tabpanel"
+                                        aria-labelledby="app_update_lay-tab">
+                                        <form method="post" action="{{ url('setting/appupdate') }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row p-5">
+                                                <div class="col-md-6">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="show_update_dialog"
+                                                            type="checkbox" id="rememberMe"
+                                                            @if (App\Models\Setting::getValue('show_update_dialog') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label" for="rememberMe">Show
+                                                            Update Dialog</label>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" name="force_update"
+                                                            type="checkbox" id="rememberMe"
+                                                            @if (App\Models\Setting::getValue('force_update') == 'true') checked @endif>
+                                                        <label class="text-center form-check-label" for="rememberMe">Force
+                                                            Update</label>
+                                                    </div>
+                                                </div>
+                                                <hr>
 
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">DigitalOcean Space
-                                                        Endpoint</label>
-                                                    <input class="form-control" name="do_end_point" id="do_end_point"
-                                                        type="text" value="{{ env('DO_SPACES_ENDPOINT') }}" required>
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">New Version
+                                                            Code</label>
+                                                        <input class="form-control" name="app_version_code"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('app_version_code') }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">App
+                                                            Link</label>
+                                                        <input class="form-control" name="app_link" type="text"
+                                                            value="{{ App\Models\Setting::getValue('app_link') }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Update
+                                                            Information</label>
+                                                        <input class="form-control" name="update_information"
+                                                            type="text"
+                                                            value="{{ App\Models\Setting::getValue('update_information') }}">
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @if (Session::get('admin_type') == 'Demo')
+                                                            <div class="form-control btn btn-primary demo_action">Submit
+                                                            </div>
+                                                        @else
+                                                            <input class="form-control btn btn-primary" type="submit"
+                                                                value="Update">
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
+                                        </form>
+                                    </div>
 
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    @if (Session::get('admin_type') == 'Demo')
-                                                        <div class="form-control btn btn-primary demo_action">Submit</div>
-                                                    @else
-                                                        <input class="form-control btn btn-primary" type="submit"
-                                                            value="Update">
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
+                                    <div class="tab-pane fade" id="privacy_terms_lay" role="tabpanel"
+                                        aria-labelledby="privacy_terms_lay-tab">
+                                        <form method="post" action="{{ url('setting/privacyterms') }}"
+                                            id="termscondition_form" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row p-3">
 
-                                <div class="tab-pane fade" id="app_update_lay" role="tabpanel"
-                                    aria-labelledby="app_update_lay-tab">
-                                    <form method="post" action="{{ url('setting/appupdate') }}"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row p-5">
-                                            <div class="col-md-6">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="show_update_dialog"
-                                                        type="checkbox" id="rememberMe"
-                                                        @if (App\Models\Setting::getValue('show_update_dialog') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label" for="rememberMe">Show
-                                                        Update Dialog</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" name="force_update" type="checkbox"
-                                                        id="rememberMe" @if (App\Models\Setting::getValue('force_update') == 'true') checked @endif>
-                                                    <label class="text-center form-check-label" for="rememberMe">Force
-                                                        Update</label>
-                                                </div>
-                                            </div>
-                                            <hr>
-
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">New Version
-                                                        Code</label>
-                                                    <input class="form-control" name="app_version_code" type="text"
-                                                        value="{{ App\Models\Setting::getValue('app_version_code') }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">App Link</label>
-                                                    <input class="form-control" name="app_link" type="text"
-                                                        value="{{ App\Models\Setting::getValue('app_link') }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Update
-                                                        Information</label>
-                                                    <input class="form-control" name="update_information" type="text"
-                                                        value="{{ App\Models\Setting::getValue('update_information') }}">
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    @if (Session::get('admin_type') == 'Demo')
-                                                        <div class="form-control btn btn-primary demo_action">Submit</div>
-                                                    @else
-                                                        <input class="form-control btn btn-primary" type="submit"
-                                                            value="Update">
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <div class="tab-pane fade" id="privacy_terms_lay" role="tabpanel"
-                                    aria-labelledby="privacy_terms_lay-tab">
-                                    <form method="post" action="{{ url('setting/privacyterms') }}"
-                                        id="termscondition_form" enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row p-3">
-
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Privacy
-                                                        Policy</label>
-                                                    <textarea name="privacypolicy" id="privacypolicy_et">
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Privacy
+                                                            Policy</label>
+                                                        <textarea name="privacypolicy" id="privacypolicy_et">
                                      {{ App\Models\Setting::getValue('privacypolicy') }}
                                 </textarea>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="text-center" class="form-control-label">Terms &
-                                                        Condition</label>
-                                                    <textarea name="terms_and_condition" id="termscondition_et">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="text-center" class="form-control-label">Terms &
+                                                            Condition</label>
+                                                        <textarea name="terms_and_condition" id="termscondition_et">
                                     
                                     {{ App\Models\Setting::getValue('terms_and_condition') }}
                                 </textarea>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <hr>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    @if (Session::get('admin_type') == 'Demo')
-                                                        <div class="form-control btn btn-primary demo_action">Submit</div>
-                                                    @else
-                                                        <input class="form-control btn btn-primary" type="submit"
-                                                            value="Update">
-                                                    @endif
+                                                <hr>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @if (Session::get('admin_type') == 'Demo')
+                                                            <div class="form-control btn btn-primary demo_action">Submit
+                                                            </div>
+                                                        @else
+                                                            <input class="form-control btn btn-primary" type="submit"
+                                                                value="Update">
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
                     </div>
+
                 </div>
-
-            </div>
-
+            @else
+                <div style="text-align:center"> Sorry, You are not allowed on this page </div>
+            @endif
         </div>
     </div>
 
