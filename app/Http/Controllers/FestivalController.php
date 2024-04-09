@@ -68,8 +68,13 @@ class FestivalController extends Controller
 
     public function filterby_category($id)
     {
+        if(Admin::isPermission('posts') == false) return back();
+
+        $user_id = Session::get('userid');
+
         $data['sections'] = Section::where('status', '0')->get();
-        $data['posts'] = Posts::with('section')->where('type', 'festival')->where('category_id', $id)->orderBy('id', 'DESC')->paginate(12);
+        if(Session::get('admin_type') == 'Super') $data['posts'] = Posts::with('section')->where('type', 'festival')->where('category_id', $id)->orderBy('id', 'DESC')->paginate(12);
+        else $data['posts'] = Posts::with('section')->where('owner_id', $user_id)->where('type', 'festival')->where('category_id', $id)->orderBy('id', 'DESC')->paginate(12);
         $data['categories'] = Category::where('status', '0')->where('type', 'festival')->get();
 
         $category_name = Category::find($id);
@@ -243,7 +248,7 @@ class FestivalController extends Controller
                 $post->orientation = $orientation;
                 $post->height = $size[1];
                 $post->width = $size[0];
-
+                $post->owner_id = Session::get('userid');
                 $post->save();
             }
         } else {

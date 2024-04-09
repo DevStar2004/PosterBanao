@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\Category;
@@ -18,6 +19,8 @@ class HomeController extends Controller
 {
     function index(){
         
+        if(Admin::isPermission('admin') == false) return back();
+
         $path = public_path().'/uploads/pdf/';
         if (!File::exists($path)) {
             File::makeDirectory($path, $mode = 0777, true, true);
