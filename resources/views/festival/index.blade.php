@@ -113,7 +113,7 @@
                                                 @endif
                                                 <div class="d-flex mt-2">
                                                     <div>
-                                                        <a class="btn btn-icon-only btn-rounded btn-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center 
+                                                        <a class="btn btn-icon-only btn-rounded btn-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"
                                                             href="{{ secure_url('/festival/' . $post->id . '/edit') }}">
                                                             <i class="fas fa-pencil-alt"></i>
                                                         </a>

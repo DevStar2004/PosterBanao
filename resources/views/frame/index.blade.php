@@ -1,7 +1,7 @@
 @extends('main')
 
 @php
-    $is_permitted = App\Models\Admin::isPermission('section');
+    $is_permitted = App\Models\Admin::isPermission('frame');
 @endphp
 
 @section('content')
