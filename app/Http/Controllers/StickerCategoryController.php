@@ -55,6 +55,7 @@ class StickerCategoryController extends Controller
         ]);
         $id = StickerCategory::create([
             "name" => $request->get("title"),
+            "owner_id" => Session::get('userid')
         ]);
          return redirect()->route('stickercategory.index');
     }

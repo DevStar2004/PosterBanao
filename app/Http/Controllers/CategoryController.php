@@ -31,7 +31,7 @@ class CategoryController extends Controller
                 orderBy('id', 'DESC')->paginate(12);
             $data['type'] = 'festival';
             return view('category.index', $data);
-        } else return view('category.index');
+        } else return view('category.index', ['type' => 'festival']);
     }
 
     public function businessCategory()
@@ -41,7 +41,7 @@ class CategoryController extends Controller
                 orderBy('id', 'DESC')->paginate(12);
             $data['type'] = 'business';
             return view('category.index', $data);
-        } else return view('category.index');
+        } else return view('category.index', ['type' => 'business']);
     }
 
     public function getCategoryByType(Request $request)
@@ -57,7 +57,7 @@ class CategoryController extends Controller
             $data['type'] = 'custom';
             return view('category.index', $data);
         } else {
-            return view('category.index');
+            return view('category.index', ['type' => 'custom']);
         }
     }
 
@@ -69,7 +69,7 @@ class CategoryController extends Controller
             $data['type'] = 'political';
             return view('category.index', $data);
         } else {
-            return view('category.index');
+            return view('category.index', ['type' => 'political']);
         }
     }
 
@@ -130,7 +130,8 @@ class CategoryController extends Controller
         $posts = new Category();
         $posts->name = $request->get('title');
         $posts->type = $request->get('type');
-
+        $posts->owner_id = Session::get('userid');
+        
         if ($request->get('type') == 'festival') {
             $posts->event_date = $request->get('event_date');
         }

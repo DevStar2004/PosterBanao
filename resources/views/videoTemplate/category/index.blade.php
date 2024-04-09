@@ -1,9 +1,8 @@
 @extends('main')
 
 @php
-    $is_permitted = (App\Models\Admin::isPermission('category') == 'true');
+    $is_permitted = App\Models\Admin::isPermission('video') == 'true';
 @endphp
-
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -11,25 +10,18 @@
 
                 <div class="card-header py-0 bg-primary">
                     <div class="d-flex align-items-center">
-                        <h6 class="text-white">{{ ucfirst($type) }} Category</h6>
-                        <div class="ms-auto d-flex">
+                        <h6 class="text-white">Video Tamplate Category</h6>
 
-                        </div>
-                        <div class="ms-auto mt-3 d-flex">
-                            <form action="{{ url('category/search') }}" method="POST" class="ms-auto me-4">
-                                @csrf
-                                <input class="form-control" {{$is_permitted ? "" : "disabled"}} placeholder="Search"
-                                    value="@if (!empty($search)) {{ $search }} @endif" type="text"
-                                    name="search">
-                                <input class="form-control" value="{{ $type }}" type="hidden" name="type">
-                            </form>
-                            <a href="{{ route('category.create') }}" class="btn btn-success {{$is_permitted ? '' : 'disabled'}}">
+                        <div class="ms-auto mt-3">
+                            <a href="{{ route('videotemplatecategory.create') }}"
+                                class="btn btn-success {{ $is_permitted ? '' : 'disabled' }}">
                                 <i class="fas fa-plus"></i>
-                                Add Category
+                                Add New
                             </a>
                         </div>
                     </div>
                 </div>
+
                 @if ($is_permitted == true)
                     <div class="card-body mt-n4">
 
@@ -44,10 +36,9 @@
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 ID</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Name
-                                            </th>
+                                                Details</th>
                                             <th
-                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Status</th>
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -65,18 +56,16 @@
                                                 </td>
 
                                                 <td>
-                                                    <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex py-1">
                                                         <div>
-                                                            <img src="{{ asset($category->image) }}"
+                                                            <img src="@if ($category->image) {{ url($category->image) }} @else {{ url('/images/placeholder.jpg') }} @endif"
                                                                 class="avatar avatar-xl me-3" alt="user1">
                                                         </div>
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm title">{{ $category->name }}</h6>
-                                                            <p class="mb-0 text-sm">{{ $category->event_date }}</p>
+                                                            <h6 class="mb-0">{{ $category->name }}</h6>
                                                         </div>
                                                     </div>
                                                 </td>
-
 
                                                 <td class="align-middle">
                                                     <div class="form-switch align-items-center justify-content-center">
@@ -88,25 +77,27 @@
 
                                                 <td class="align-middle text-center">
                                                     <span
-                                                        class="text-secondary text-xs font-weight-bold">{{ $category->created_at }}</span>
+                                                        class="text-secondary text-xs font-weight-bold">{{ date('d M, y', strtotime($category->created_at)) }}</span>
                                                 </td>
-
 
                                                 <td class="align-middle">
                                                     <div class="ms-auto text-end align-middle text-center text-sm">
+                                                        <a class="btn btn-icon-only btn-rounded btn-warning"><i
+                                                                class="fas fa-hand-paper"></i></a>
                                                         <a href="#" data-id="{{ $category->id }}" data-toggle="modal"
                                                             data-target="#deleteModal"
                                                             class="btn btn-icon-only btn-rounded btn-danger"><i
                                                                 class="far fa-trash-alt"></i></a>
-                                                        <a class="btn btn-icon-only btn-rounded btn btn-success"
-                                                            href="{{ secure_url('/category/' . $category->id . '/edit') }}"><i
+                                                        <a class="btn btn-icon-only btn-rounded btn-success"
+                                                            href="{{ secure_url('/videotamplatecategory/' . $category->id . '/edit') }}"><i
                                                                 class="fas fa-pencil-alt"></i></a>
                                                     </div>
                                                 </td>
+
                                             </tr>
 
-                                            <form action="{{ url('category/' . $category->id) }}" method="POST"
-                                                id="form-{{ $category->id }}">
+                                            <form action="{{ url('videotamplatecategory/' . $category->id) }}"
+                                                method="POST" id="form-{{ $category->id }}">
                                                 @method('DELETE')
                                                 @csrf
                                                 <input type="hidden" name="id" value="{{ $category->id }}">
@@ -121,11 +112,12 @@
                         </div>
 
                     </div>
+
                     @if (empty($search))
                         <div class="d-flex justify-content-center">{{ $categories->links() }}</div>
                     @endif
                 @else
-                    <span style="text-align:center"> You are not allowed on this page</span>
+                    <span> You are not allowed on this page </span>
                 @endif
             </div>
         </div>
@@ -154,15 +146,6 @@
     </div>
 
     <script>
-        function searchByType() {
-            var id = document.getElementById("category").value;
-            if (id == "All") {
-                window.location.replace("{{ url('/category') }}");
-            } else {
-                window.location.replace("{{ url('/categorytype') }}" + "/" + id);
-            }
-        }
-
         $("#deleteModal").on('show.bs.modal', function(e) {
             var id = e.relatedTarget.dataset.id;
             $("#delete_btn").attr("data-submit", id);
@@ -179,7 +162,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{ secure_url('/category-status') }}",
+                url: "{{ secure_url('/videotamplatecategory-status') }}",
                 data: {
                     checked: checked,
                     id: id
@@ -200,10 +183,6 @@
                 }
 
             });
-        });
-
-        $(document).ready(function() {
-            create_custom_dropdowns();
         });
     </script>
 @endsection

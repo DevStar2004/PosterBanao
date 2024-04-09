@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\Greeting;
 use App\Models\GreetingSection;
@@ -11,6 +12,7 @@ use Illuminate\Support\Str;
 use Validator;
 use Storage;
 use File;
+use Session;
 
 class GreetingController extends Controller
 {
@@ -21,36 +23,38 @@ class GreetingController extends Controller
      */
     public function index()
     {
-        $posts = Greeting::where('orientation', null)->get();
-        foreach ($posts as $post) {
-            $p = Greeting::find($post->id);
-            if (File::exists($p->item_url)) {
-                $size = getimagesize($p->item_url);
+        if (Admin::isPermission('greeting')) {
+            $posts = Greeting::where('orientation', null)->get();
+            foreach ($posts as $post) {
+                $p = Greeting::find($post->id);
+                if (File::exists($p->item_url)) {
+                    $size = getimagesize($p->item_url);
 
-                if ($size[0] > $size[1]) {
-                    $orientation = 'landscape';
-                }
-                if ($size[0] < $size[1]) {
-                    $orientation = 'portrait';
-                }
-                if ($size[0] == $size[1]) {
-                    $orientation = 'square';
-                }
+                    if ($size[0] > $size[1]) {
+                        $orientation = 'landscape';
+                    }
+                    if ($size[0] < $size[1]) {
+                        $orientation = 'portrait';
+                    }
+                    if ($size[0] == $size[1]) {
+                        $orientation = 'square';
+                    }
 
-                $p->orientation = $orientation;
-                $p->height = $size[1];
-                $p->width = $size[0];
-                $p->save();
-            } else {
-                $p->delete();
+                    $p->orientation = $orientation;
+                    $p->height = $size[1];
+                    $p->width = $size[0];
+                    $p->save();
+                } else {
+                    $p->delete();
+                }
             }
-        }
 
-        $data['posts'] = Greeting::orderBy('id', 'DESC')->paginate(12);
-        $data['sections'] = GreetingSection::where('status', '0')->get();
-        // echo(json_encode($data['posts']));
-        // die();
-        return view('greeting.index', $data);
+            $data['posts'] = Greeting::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            $data['sections'] = GreetingSection::where('status', '0')->get();
+            // echo(json_encode($data['posts']));
+            // die();
+            return view('greeting.index', $data);
+        } else return view('greeting.index');
     }
 
     public function greeting_status(Request $request)
@@ -186,6 +190,7 @@ class GreetingController extends Controller
                     'premium' => $request->get('premium'),
                     'thumb_url' => $thumbnail_url,
                     'language' => $request->get('language'),
+                    'owner_id' => Session::get('userid')
                 ]);
             }
         }

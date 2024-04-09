@@ -4,67 +4,49 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Admin;
-use App\Models\Category;
-use App\Models\SubCategory;
+use App\Models\VideoTemplateCategory;
+use App\Models\VideoTemplate;
 use App\Models\Setting;
 use Illuminate\Support\Str;
-use Storage;
 use Session;
 
-class SubCategoryController extends Controller
+class VideoTemplateCategoryController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $data['categories'] = SubCategory::with('category')->orderBy('id', 'DESC')->paginate(12);
-        $data['type'] = '';
-        return view('subcategory.index', $data);
-    }
-
-    public function businessCategory()
-    {
-        if (Admin::isPermission('category') == 'true') {
-            $data['categories'] = SubCategory::with('category')->where('owner_id', Session::get('userid'))->where('type', 'business')->orderBy('id', 'DESC')->paginate(12);
-            $data['type'] = 'business';
-            return view('subcategory.index', $data);
+        if (Admin::isPermission('video')) {
+            $data['categories'] = VideoTemplateCategory::where('owner_id', Session::get('userid'))->orderBy('orders', 'ASC')->paginate(25);
+            return view('videoTemplate.category.index', $data);
         } else {
-            return view('subcategory.index');
+            return view('videoTemplate.category.index');
         }
-    }
-
-    public function searchCategory(Request $request)
-    {
-        $data['type'] = $request->get('type');
-        if ($request->get('search') != '') {
-            $data['search'] = $request->get('search');
-            $data['categories'] = SubCategory::with('category')
-                ->where('type', $request->get('type'))
-                ->where('name', 'like', '%' . $request->get('search') . '%')
-                ->get();
-        } else {
-            $data['categories'] = SubCategory::with('category')->where('type', $request->get('type'))->orderBy('id', 'DESC')->paginate(12);
-        }
-
-        return view('subcategory.index', $data);
-    }
-
-    public function subCategoryByCategoryId(Request $request)
-    {
-        return SubCategory::where('category_id', $request->get('id'))->orderBy('id', 'DESC')->get();
-    }
-
-    public function filterby_type($type)
-    {
-        $data['categories'] = SubCategory::with('category')->where('type', $type)->orderBy('id', 'DESC')->paginate(12);
-        $data['type'] = $type;
-        return view('subcategory.index', $data);
     }
 
     public function category_status(Request $request)
     {
-        // echo("okk");
-        $festivals = SubCategory::find($request->get('id'));
+        $festivals = VideoTemplateCategory::find($request->get('id'));
         $festivals->status = $request->get('checked') == 'true' ? 0 : 1;
         $festivals->save();
+    }
+
+    public function category_order(Request $request)
+    {
+        $positions = $request->get('position');
+        $ids = $request->get('parameter');
+
+        $ids = json_decode($ids, true);
+        $positions = json_decode($positions, true);
+
+        foreach ($ids as $key => $id) {
+            $sec = VideoTemplateCategory::find($id);
+            $sec->orders = $key + 1;
+            $sec->save();
+        }
     }
 
     /**
@@ -74,8 +56,7 @@ class SubCategoryController extends Controller
      */
     public function create()
     {
-        $data['businessCategories'] = Category::where('type', 'business')->where('status', '0')->orderBy('id', 'DESC')->get();
-        return view('subcategory.create', $data);
+        return view('videoTemplate.category.create');
     }
 
     /**
@@ -88,17 +69,12 @@ class SubCategoryController extends Controller
     {
         $validatedData = $request->validate([
             'image' => 'required|mimes:jpg,png,jpeg',
-            'category' => 'required',
             'title' => 'required',
-            'type' => 'required',
         ]);
 
-        $posts = new SubCategory();
+        $posts = new VideoTemplateCategory();
         $posts->name = $request->get('title');
-        $posts->type = $request->get('type');
-        $posts->category_id = $request->get('category');
-        $posts->owner_id = Session::get('userid');
-        
+
         if ($request->file('image') && $request->file('image')->isValid()) {
             $image = $request->file('image');
 
@@ -108,7 +84,6 @@ class SubCategoryController extends Controller
             if (Setting::getValue('storage_type') == 'digitalOccean') {
                 $item_url = Storage::disk('spaces')->put('uploads/posts/' . $fileName, file_get_contents($image), 'public');
                 $thumbnail_url = env('DO_SPACES_URL') . '/uploads/posts/' . $fileName;
-                $posts->image = $thumbnail_url;
             } else {
                 $thumbName = Str::uuid() . '.' . $extension;
 
@@ -141,20 +116,9 @@ class SubCategoryController extends Controller
                 }
             }
         }
-
+        $posts->owner_id = Session::get('userid');
         $posts->save();
-        if ($request->get('type') == 'festival') {
-            return redirect('/festivalSubCategory');
-        }
-        if ($request->get('type') == 'business') {
-            return redirect('/businessSubCategory');
-        }
-        if ($request->get('type') == 'political') {
-            return redirect('/politicalSubCategory');
-        }
-        if ($request->get('type') == 'custom') {
-            return redirect('/customSubCategory');
-        }
+        return redirect('/videotemplatecategory');
     }
 
     /**
@@ -165,7 +129,6 @@ class SubCategoryController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -176,9 +139,8 @@ class SubCategoryController extends Controller
      */
     public function edit($id)
     {
-        $data['businessCategories'] = Category::where('type', 'business')->where('status', '0')->orderBy('id', 'DESC')->get();
-        $data['category'] = SubCategory::find($id);
-        return view('subcategory.edit', $data);
+        $data['category'] = VideoTemplateCategory::find($id);
+        return view('videoTemplate.category.edit', $data);
     }
 
     /**
@@ -191,15 +153,11 @@ class SubCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'image' => 'nullable|mimes:jpg,png,jpeg',
             'title' => 'required',
-            'type' => 'required',
         ]);
 
-        $posts = SubCategory::find($id);
+        $posts = VideoTemplateCategory::find($id);
         $posts->name = $request->get('title');
-        $posts->type = $request->get('type');
-        $posts->category_id = $request->get('category');
 
         if ($request->file('image') && $request->file('image')->isValid()) {
             $image = $request->file('image');
@@ -210,12 +168,12 @@ class SubCategoryController extends Controller
             if (Setting::getValue('storage_type') == 'digitalOccean') {
                 $item_url = Storage::disk('spaces')->put('uploads/posts/' . $fileName, file_get_contents($image), 'public');
                 $thumbnail_url = env('DO_SPACES_URL') . '/uploads/posts/' . $fileName;
-                $posts->image = $thumbnail_url;
             } else {
                 $thumbName = Str::uuid() . '.' . $extension;
 
                 $image->move('uploads/posts', $fileName);
                 $item_url = 'uploads/posts/' . $fileName;
+
                 if ($request->get('type') == 'political') {
                     $posts->image = $item_url;
                 } else {
@@ -237,25 +195,14 @@ class SubCategoryController extends Controller
 
                     imagejpeg($image, $thumbnail_url, 50);
                     @unlink($item_url);
-                    @unlink($posts->image);
+
                     $posts->image = $thumbnail_url;
                 }
             }
         }
 
         $posts->save();
-        if ($request->get('type') == 'festival') {
-            return redirect('/festivalSubCategory');
-        }
-        if ($request->get('type') == 'business') {
-            return redirect('/businessSubCategory');
-        }
-        if ($request->get('type') == 'political') {
-            return redirect('/politicalSubCategory');
-        }
-        if ($request->get('type') == 'custom') {
-            return redirect('/customSubCategory');
-        }
+        return redirect('/videotemplatecategory');
     }
 
     /**
@@ -266,10 +213,9 @@ class SubCategoryController extends Controller
      */
     public function destroy($id)
     {
-        $posts = SubCategory::find($id);
+        $posts = VideoTemplateCategory::find($id);
         @unlink($posts->image);
-
-        SubCategory::find($id)->delete();
-        return redirect()->route('subcategory.index');
+        $posts->delete();
+        return redirect()->route('videotemplatecategory.index');
     }
 }

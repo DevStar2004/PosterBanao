@@ -10,7 +10,7 @@
                    <h6 class="text-white" >Business Card Tamplate</h6>
                     
                     <div class="ms-auto mt-3">
-                        <a href="{{ route('businesscardtamplate.create')}}" class="btn btn-success "><i class="fas fa-plus"></i> Add Tamplate</a>
+                        <a href="{{ route('businesscardtemplate.create')}}" class="btn btn-success "><i class="fas fa-plus"></i> Add Tamplate</a>
                     </div>
                 </div>
             </div>

@@ -92,6 +92,7 @@ class InvitationCategoryController extends Controller
             $posts->image = $thumbnail_url;
         }
 
+        $posts->owner_id = Session::get('userid');
         $posts->save();
         return redirect()->route('invitationcategory.index');
     }

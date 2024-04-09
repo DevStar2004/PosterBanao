@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\Logos;
 use App\Models\LogoCategory;
 use Illuminate\Support\Str;
 use Storage;
+use Session;
 
 class LogosController extends Controller
 {
@@ -18,71 +20,68 @@ class LogosController extends Controller
      */
     public function index()
     {
-        $data['categories'] = LogoCategory::where('status','0')->orderBy('id', 'DESC')->get();
-        $data['logos'] = Logos::orderBy('id', 'DESC')->paginate(12);
-        
-        return view('logo.index',$data);
+        if (Admin::isPermission('posts')) {
+            $data['categories'] = LogoCategory::where('status', '0')->orderBy('id', 'DESC')->get();
+            $data['logos'] = Logos::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+
+            return view('logo.index', $data);
+        } else {
+            return view('logo.index');
+        }
     }
-    
-    public function filterby_category($id){
-        
-        $data['categories'] = LogoCategory::where('status','0')->orderBy('id', 'DESC')->get();
-        $data['logos'] = Logos::where('category_id',$id)->orderBy('id', 'DESC')->paginate(12);
+
+    public function filterby_category($id)
+    {
+        $data['categories'] = LogoCategory::where('status', '0')->orderBy('id', 'DESC')->get();
+        $data['logos'] = Logos::where('category_id', $id)->orderBy('id', 'DESC')->paginate(12);
         $data['category'] = LogoCategory::find($id)->name;
-        return view('logo.index',$data);
+        return view('logo.index', $data);
     }
-    
+
     public function logos_status(Request $request)
     {
         // echo("okk");
-        $posts = Logos::find($request->get("id"));
-        $posts->status = ($request->get("checked")=="true")?0:1;
+        $posts = Logos::find($request->get('id'));
+        $posts->status = $request->get('checked') == 'true' ? 0 : 1;
         $posts->save();
     }
-    
+
     public function logos_premium_action(Request $request)
     {
-        $festivals = Logos::find($request->get("id"));
-        $festivals->premium = $request->get("type");
+        $festivals = Logos::find($request->get('id'));
+        $festivals->premium = $request->get('type');
         $festivals->save();
     }
-    
+
     public function logos_action(Request $request)
     {
-        $ids = explode(",",$request->posts_ids);
-        if($request->posts_ids != null)
-        {
-            if($request->action_type == "enable")
-            {
-                foreach($ids as $id){
+        $ids = explode(',', $request->posts_ids);
+        if ($request->posts_ids != null) {
+            if ($request->action_type == 'enable') {
+                foreach ($ids as $id) {
                     $posts = Logos::find($id);
                     $posts->status = 0;
                     $posts->save();
                 }
             }
-    
-            if($request->action_type == "disable")
-            {
-                foreach($ids as $id){
+
+            if ($request->action_type == 'disable') {
+                foreach ($ids as $id) {
                     $posts = Logos::find($id);
                     $posts->status = 1;
                     $posts->save();
                 }
             }
-    
-            if($request->action_type == "delete")
-            {
-                foreach($ids as $id){
-                    
+
+            if ($request->action_type == 'delete') {
+                foreach ($ids as $id) {
                     $posts = Logos::find($id);
                     @unlink($posts->item_url);
                     Logos::find($id)->delete();
-                    
                 }
             }
-            
         }
-        return redirect()->route("logos.index");
+        return redirect()->route('logos.index');
     }
     /**
      * Show the form for creating a new resource.
@@ -91,8 +90,8 @@ class LogosController extends Controller
      */
     public function create()
     {
-        $data['categories'] = LogoCategory::where('status','0')->orderBy('id', 'DESC')->get();
-        return view('logo.create',$data);
+        $data['categories'] = LogoCategory::where('status', '0')->orderBy('id', 'DESC')->get();
+        return view('logo.create', $data);
     }
 
     /**
@@ -104,38 +103,37 @@ class LogosController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-             'image' => 'required',
-             'title' => 'required',
-             'code' => 'required',
-             'category' => 'required'
+            'image' => 'required',
+            'title' => 'required',
+            'code' => 'required',
+            'category' => 'required',
         ]);
-        
+
         $sicker = new Logos();
-        $sicker->title = $request->get("title");
-        $sicker->category_id = $request->get("category");
-        $sicker->code = $request->get("code");
-                
-        if ($request->file("image") && $request->file('image')->isValid()) 
-        {
+        $sicker->title = $request->get('title');
+        $sicker->category_id = $request->get('category');
+        $sicker->code = $request->get('code');
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
             $image = $request->file('image');
-            
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            
-             if(Setting::getValue('storage_type') == "digitalOccean"){
-                $item_url = Storage::disk('spaces')->put('uploads/logos/'.$fileName, file_get_contents($image),'public');
-                $item_url = env("DO_SPACES_URL").'/uploads/logos/'.$fileName;
-            }else{
+
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $item_url = Storage::disk('spaces')->put('uploads/logos/' . $fileName, file_get_contents($image), 'public');
+                $item_url = env('DO_SPACES_URL') . '/uploads/logos/' . $fileName;
+            } else {
                 $image->move('uploads/logos', $fileName);
-                $item_url = 'uploads/logos/'.$fileName;
+                $item_url = 'uploads/logos/' . $fileName;
             }
-            
+
             $sicker->thumb_url = $item_url;
         }
-        
+
+        $sicker->owner_id = Session::get('userid');
         $sicker->save();
         return redirect()->route('logos.index');
-        
     }
 
     /**
@@ -158,10 +156,10 @@ class LogosController extends Controller
     public function edit($id)
     {
         $data['logo'] = Logos::find($id);
-        $data['categories'] = LogoCategory::where('status','0')->orderBy('id', 'DESC')->get();
+        $data['categories'] = LogoCategory::where('status', '0')->orderBy('id', 'DESC')->get();
         // echo(json_encode($data['posts']));
         // die();
-        return view('logo.edit',$data);
+        return view('logo.edit', $data);
     }
 
     /**
@@ -174,34 +172,33 @@ class LogosController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-             'title' => 'required',
-             'code' => 'required',
-             'category' => 'required'
+            'title' => 'required',
+            'code' => 'required',
+            'category' => 'required',
         ]);
-        
+
         $sicker = Logos::find($id);
-        $sicker->title = $request->get("title");
-        $sicker->category_id = $request->get("category");
-        $sicker->code = $request->get("code");
-                
-        if ($request->file("image") && $request->file('image')->isValid()) 
-        {
+        $sicker->title = $request->get('title');
+        $sicker->category_id = $request->get('category');
+        $sicker->code = $request->get('code');
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
             $image = $request->file('image');
-            
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            
-             if(Setting::getValue('storage_type') == "digitalOccean"){
-                $item_url = Storage::disk('spaces')->put('uploads/logos/'.$fileName, file_get_contents($image),'public');
-                $item_url = env("DO_SPACES_URL").'/uploads/logos/'.$fileName;
-            }else{
+
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $item_url = Storage::disk('spaces')->put('uploads/logos/' . $fileName, file_get_contents($image), 'public');
+                $item_url = env('DO_SPACES_URL') . '/uploads/logos/' . $fileName;
+            } else {
                 $image->move('uploads/logos', $fileName);
-                $item_url = 'uploads/logos/'.$fileName;
+                $item_url = 'uploads/logos/' . $fileName;
             }
-            
+
             $sicker->thumb_url = $item_url;
         }
-        
+
         $sicker->save();
         return redirect()->route('logos.index');
     }
@@ -215,11 +212,11 @@ class LogosController extends Controller
     public function destroy($id)
     {
         $sicker = Logos::find($id);
-        
+
         @unlink($sicker->thumb_url);
 
         Logos::find($id)->delete();
-        
+
         return redirect()->route('logos.index');
     }
 }

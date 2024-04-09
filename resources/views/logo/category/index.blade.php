@@ -1,5 +1,9 @@
 @extends('main')
 
+@php
+    $is_permitted = (App\Models\Admin::isPermission('section') == 'true');
+@endphp
+
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -10,13 +14,15 @@
                         <h6 class="text-white">Logo Categories</h6>
 
                         <div class="ms-auto mt-3">
-                            <a href="{{ route('logocategory.create') }}" class="btn btn-success "><i class="fas fa-plus"></i>
-                                Add New</a>
+                            <a href="{{ route('logocategory.create') }}" class="btn btn-success {{$is_permitted ? "" : "disabled"}}">
+                                <i class="fas fa-plus"></i>
+                                Add New
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                @if (App\Models\Admin::isPermission('category') == 'true')
+                @if ($is_permitted == true)
                     <div class="card-body mt-n3">
 
                         <div class="row mb">

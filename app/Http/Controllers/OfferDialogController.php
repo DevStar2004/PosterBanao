@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\OfferDialog;
 use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Subscription;
 use Illuminate\Support\Str;
+use Session;
 
 class OfferDialogController extends Controller
 {
@@ -18,9 +20,12 @@ class OfferDialogController extends Controller
      */
     public function index()
     {
-        
-        $data['offerdialogs'] = OfferDialog::orderBy('id', 'DESC')->paginate(12);
-        return view('offerdialog.index',$data);
+        if (Admin::isPermission('offerdialog')) {
+            $data['offerdialogs'] = OfferDialog::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+            return view('offerdialog.index', $data);
+        } else {
+            return view('offerdialog.index');
+        }
     }
 
     /**
@@ -30,19 +35,17 @@ class OfferDialogController extends Controller
      */
     public function create()
     {
-        
-        $data['subscriptions'] = Subscription::where('status','0')->get();
-        $data['categories'] = Category::where('status','0')->get();
-        return view("offerdialog.create", $data);
+        $data['subscriptions'] = Subscription::where('status', '0')->get();
+        $data['categories'] = Category::where('status', '0')->get();
+        return view('offerdialog.create', $data);
     }
-    
+
     public function dialog_status(Request $request)
     {
         // echo("okk");
-        $festivals = OfferDialog::find($request->get("id"));
-        $festivals->status = ($request->get("checked")=="true")?0:1;
+        $festivals = OfferDialog::find($request->get('id'));
+        $festivals->status = $request->get('checked') == 'true' ? 0 : 1;
         $festivals->save();
-        
     }
     /**
      * Store a newly created resource in storage.
@@ -53,63 +56,62 @@ class OfferDialogController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-             'image' => 'required|mimes:jpg,png,jpeg',
-             'type' => 'required',
+            'image' => 'required|mimes:jpg,png,jpeg',
+            'type' => 'required',
         ]);
-        
+
         $posts = new OfferDialog();
-        $posts->action = $request->get("type");
-        
-        if($request->get("type") == 'category'){
-            $posts->action_item = $request->get("category");
+        $posts->action = $request->get('type');
+
+        if ($request->get('type') == 'category') {
+            $posts->action_item = $request->get('category');
         }
-        if($request->get("type") == 'url'){
-            $posts->action_item = $request->get("url");
+        if ($request->get('type') == 'url') {
+            $posts->action_item = $request->get('url');
         }
-        if($request->get("type") == 'subscription'){
-            $posts->action_item = $request->get("subscription");
+        if ($request->get('type') == 'subscription') {
+            $posts->action_item = $request->get('subscription');
         }
-        
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            
-            if(Setting::getValue('storage_type') == "digitalOccean"){
-                $item_url = Storage::disk('spaces')->put('uploads/thumbnail/'.$fileName, file_get_contents($image),'public');
-                $thumbnail_url = env("DO_SPACES_URL").'/uploads/thumbnail/'.$fileName;
-            }else{
-                
-                $thumbName = Str::uuid() . '.' .$extension;
-            
+
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $item_url = Storage::disk('spaces')->put('uploads/thumbnail/' . $fileName, file_get_contents($image), 'public');
+                $thumbnail_url = env('DO_SPACES_URL') . '/uploads/thumbnail/' . $fileName;
+            } else {
+                $thumbName = Str::uuid() . '.' . $extension;
+
                 $image->move('uploads/thumbnail', $fileName);
-                $item_url = 'uploads/thumbnail/'.$fileName;
-                $thumbnail_url = 'uploads/thumbnail/'.$thumbName;
-                    
-                switch($extension){ 
+                $item_url = 'uploads/thumbnail/' . $fileName;
+                $thumbnail_url = 'uploads/thumbnail/' . $thumbName;
+
+                switch ($extension) {
                     case 'jpeg':
-                        $image = imagecreatefromjpeg($item_url); 
-                        break; 
-                    case 'png': 
-                        $image = imagecreatefrompng($item_url); 
-                        break; 
-                    case 'gif': 
-                        $image = imagecreatefromgif($item_url); 
-                        break; 
-                    default: 
-                        $image = imagecreatefromjpeg($item_url); 
+                        $image = imagecreatefromjpeg($item_url);
+                        break;
+                    case 'png':
+                        $image = imagecreatefrompng($item_url);
+                        break;
+                    case 'gif':
+                        $image = imagecreatefromgif($item_url);
+                        break;
+                    default:
+                        $image = imagecreatefromjpeg($item_url);
                 }
-                
+
                 imagejpeg($image, $thumbnail_url, 80);
-                
+
                 @unlink($item_url);
             }
-            
+
             $posts->item_url = $thumbnail_url;
         }
-        
+
+        $posts->owner_id = Session::get('userid');
         $posts->save();
         return redirect()->route('offerdialog.index');
     }
@@ -133,11 +135,10 @@ class OfferDialogController extends Controller
      */
     public function edit($id)
     {
-        
-        $data['subscriptions'] = Subscription::where('status','0')->get();
-        $data['categories'] = Category::where('status','0')->get();
+        $data['subscriptions'] = Subscription::where('status', '0')->get();
+        $data['categories'] = Category::where('status', '0')->get();
         $data['offerdialog'] = OfferDialog::find($id);
-        return view("offerdialog.edit", $data);
+        return view('offerdialog.edit', $data);
     }
 
     /**
@@ -150,61 +151,59 @@ class OfferDialogController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-             'image' => 'nullable|mimes:jpg,png,jpeg',
-             'type' => 'required',
+            'image' => 'nullable|mimes:jpg,png,jpeg',
+            'type' => 'required',
         ]);
-        
+
         $posts = OfferDialog::find($id);
-        $posts->action = $request->get("type");
-        
-        if($request->get("type") == 'category'){
-            $posts->action_item = $request->get("category");
+        $posts->action = $request->get('type');
+
+        if ($request->get('type') == 'category') {
+            $posts->action_item = $request->get('category');
         }
-        if($request->get("type") == 'url'){
-            $posts->action_item = $request->get("url");
+        if ($request->get('type') == 'url') {
+            $posts->action_item = $request->get('url');
         }
-        if($request->get("type") == 'subscription'){
-            $posts->action_item = $request->get("subscription");
+        if ($request->get('type') == 'subscription') {
+            $posts->action_item = $request->get('subscription');
         }
-        
-        
-        if ($request->file("image") && $request->file('image')->isValid()) {
-            $image = $request->file("image");
-            
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            
-            if(Setting::getValue('storage_type') == "digitalOccean"){
-                $item_url = Storage::disk('spaces')->put('uploads/thumbnail/'.$fileName, file_get_contents($image),'public');
-                $thumbnail_url = env("DO_SPACES_URL").'/uploads/thumbnail/'.$fileName;
-            }else{
-                
-                $thumbName = Str::uuid() . '.' .$extension;
+
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $item_url = Storage::disk('spaces')->put('uploads/thumbnail/' . $fileName, file_get_contents($image), 'public');
+                $thumbnail_url = env('DO_SPACES_URL') . '/uploads/thumbnail/' . $fileName;
+            } else {
+                $thumbName = Str::uuid() . '.' . $extension;
                 $image->move('uploads/thumbnail', $fileName);
-                $item_url = 'uploads/thumbnail/'.$fileName;
-                $thumbnail_url = 'uploads/thumbnail/'.$thumbName;
-                    
-                switch($extension){ 
+                $item_url = 'uploads/thumbnail/' . $fileName;
+                $thumbnail_url = 'uploads/thumbnail/' . $thumbName;
+
+                switch ($extension) {
                     case 'jpeg':
-                        $image = imagecreatefromjpeg($item_url); 
-                        break; 
-                    case 'png': 
-                        $image = imagecreatefrompng($item_url); 
-                        break; 
-                    case 'gif': 
-                        $image = imagecreatefromgif($item_url); 
-                        break; 
-                    default: 
-                        $image = imagecreatefromjpeg($item_url); 
+                        $image = imagecreatefromjpeg($item_url);
+                        break;
+                    case 'png':
+                        $image = imagecreatefrompng($item_url);
+                        break;
+                    case 'gif':
+                        $image = imagecreatefromgif($item_url);
+                        break;
+                    default:
+                        $image = imagecreatefromjpeg($item_url);
                 }
                 imagejpeg($image, $thumbnail_url, 80);
                 @unlink($item_url);
                 @unlink($posts->item_url);
             }
-            
+
             $posts->item_url = $thumbnail_url;
         }
-        
+
         $posts->save();
         return redirect()->route('offerdialog.index');
     }

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Setting;
 use App\Models\Sticker;
 use App\Models\StickerCategory;
 use Illuminate\Support\Str;
 use Storage;
+use Session;
 
 class StickerController extends Controller
 {
@@ -18,72 +20,68 @@ class StickerController extends Controller
      */
     public function index()
     {
-        
-        $data['categories'] = StickerCategory::where('status','0')->orderBy('id', 'DESC')->get();
-        $data['stickers'] = Sticker::orderBy('id', 'DESC')->paginate(12);
-        
-        return view('stickers.index',$data);
+        if (Admin::isPermission('posts')) {
+            $data['categories'] = StickerCategory::where('status', '0')->orderBy('id', 'DESC')->get();
+            $data['stickers'] = Sticker::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(12);
+
+            return view('stickers.index', $data);
+        } else {
+            return view('stickers.index');
+        }
     }
-    
-    public function filterby_category($id){
-        
-        $data['categories'] = StickerCategory::where('status','0')->orderBy('id', 'DESC')->get();
-        $data['stickers'] = Sticker::where('category_id',$id)->orderBy('id', 'DESC')->paginate(12);
+
+    public function filterby_category($id)
+    {
+        $data['categories'] = StickerCategory::where('status', '0')->orderBy('id', 'DESC')->get();
+        $data['stickers'] = Sticker::where('category_id', $id)->orderBy('id', 'DESC')->paginate(12);
         $data['category'] = StickerCategory::find($id)->name;
-        return view('stickers.index',$data);
+        return view('stickers.index', $data);
     }
-    
+
     public function sticker_status(Request $request)
     {
         // echo("okk");
-        $posts = Sticker::find($request->get("id"));
-        $posts->status = ($request->get("checked")=="true")?0:1;
+        $posts = Sticker::find($request->get('id'));
+        $posts->status = $request->get('checked') == 'true' ? 0 : 1;
         $posts->save();
     }
-    
+
     public function sticker_premium_action(Request $request)
     {
-        $festivals = Sticker::find($request->get("id"));
-        $festivals->premium = $request->get("type");
+        $festivals = Sticker::find($request->get('id'));
+        $festivals->premium = $request->get('type');
         $festivals->save();
     }
-    
+
     public function sticker_action(Request $request)
     {
-        $ids = explode(",",$request->posts_ids);
-        if($request->posts_ids != null)
-        {
-            if($request->action_type == "enable")
-            {
-                foreach($ids as $id){
+        $ids = explode(',', $request->posts_ids);
+        if ($request->posts_ids != null) {
+            if ($request->action_type == 'enable') {
+                foreach ($ids as $id) {
                     $posts = Sticker::find($id);
                     $posts->status = 0;
                     $posts->save();
                 }
             }
-    
-            if($request->action_type == "disable")
-            {
-                foreach($ids as $id){
+
+            if ($request->action_type == 'disable') {
+                foreach ($ids as $id) {
                     $posts = Sticker::find($id);
                     $posts->status = 1;
                     $posts->save();
                 }
             }
-    
-            if($request->action_type == "delete")
-            {
-                foreach($ids as $id){
-                    
+
+            if ($request->action_type == 'delete') {
+                foreach ($ids as $id) {
                     $posts = Sticker::find($id);
                     @unlink($posts->item_url);
                     Sticker::find($id)->delete();
-                    
                 }
             }
-            
         }
-        return redirect()->route("sticker.index");
+        return redirect()->route('sticker.index');
     }
     /**
      * Show the form for creating a new resource.
@@ -92,11 +90,10 @@ class StickerController extends Controller
      */
     public function create()
     {
-        
-        $data['categories'] = StickerCategory::where('status','0')->orderBy('id', 'DESC')->get();
+        $data['categories'] = StickerCategory::where('status', '0')->orderBy('id', 'DESC')->get();
         // echo(json_encode($data['posts']));
         // die();
-        return view('stickers.create',$data);
+        return view('stickers.create', $data);
     }
 
     /**
@@ -107,50 +104,44 @@ class StickerController extends Controller
      */
     public function store(Request $request)
     {
-         $validatedData = $request->validate([
-             'image_posts' => 'required',
-             'title' => 'required',
-             'category' => 'required'
+        $validatedData = $request->validate([
+            'image_posts' => 'required',
+            'title' => 'required',
+            'category' => 'required',
         ]);
-        
-        if ($request->file("image_posts")) 
-        {
-            $removedfiles = json_decode($request->get("removed_files"), true);
+
+        if ($request->file('image_posts')) {
+            $removedfiles = json_decode($request->get('removed_files'), true);
             $images = $request->file('image_posts');
-            
-            foreach($images as $image) 
-            {
-                if($removedfiles != null)
-                {
+
+            foreach ($images as $image) {
+                if ($removedfiles != null) {
                     if (in_array($image->getClientOriginalName(), $removedfiles)) {
                         continue;
                     }
                 }
-                
+
                 $extension = $image->getClientOriginalExtension();
                 $fileName = Str::uuid() . '.' . $extension;
-                
-                
-                if(Setting::getValue('storage_type') == "digitalOccean"){
-                    $item_url = Storage::disk('spaces')->put('uploads/sticker/'.$fileName, file_get_contents($image),'public');
-                    $item_url = env("DO_SPACES_URL").'/uploads/sticker/'.$fileName;
-                }else{
-                    $image->move('uploads/sticker', $fileName);
-                    $item_url = 'uploads/sticker/'.$fileName;
-                }
-                
-                
-                $sicker = new Sticker();
-                $sicker->name = $request->get("title");
-                $sicker->category_id = $request->get("category");
-                $sicker->item_url = $item_url;
-                $sicker->save();
 
+                if (Setting::getValue('storage_type') == 'digitalOccean') {
+                    $item_url = Storage::disk('spaces')->put('uploads/sticker/' . $fileName, file_get_contents($image), 'public');
+                    $item_url = env('DO_SPACES_URL') . '/uploads/sticker/' . $fileName;
+                } else {
+                    $image->move('uploads/sticker', $fileName);
+                    $item_url = 'uploads/sticker/' . $fileName;
+                }
+
+                $sicker = new Sticker();
+                $sicker->name = $request->get('title');
+                $sicker->category_id = $request->get('category');
+                $sicker->item_url = $item_url;
+                $sicker->owner_id = Session::get('userid');
+                $sicker->save();
             }
             // return $request->get("premium");
             return redirect()->route('sticker.index');
         }
-        
     }
 
     /**
@@ -172,12 +163,11 @@ class StickerController extends Controller
      */
     public function edit($id)
     {
-        
         $data['sticker'] = Sticker::find($id);
-        $data['categories'] = StickerCategory::where('status','0')->orderBy('id', 'DESC')->get();
+        $data['categories'] = StickerCategory::where('status', '0')->orderBy('id', 'DESC')->get();
         // echo(json_encode($data['posts']));
         // die();
-        return view('stickers.edit',$data);
+        return view('stickers.edit', $data);
     }
 
     /**
@@ -190,33 +180,32 @@ class StickerController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-             'image' => 'nullable|mimes:jpg,png,jpeg',
-             'title' => 'required',
-             'category' => 'required'
+            'image' => 'nullable|mimes:jpg,png,jpeg',
+            'title' => 'required',
+            'category' => 'required',
         ]);
         $sicker = Sticker::find($id);
-        $sicker->name = $request->get("title");
-        $sicker->category_id = $request->get("category");
-        
-        if ($request->file("image") && $request->file('image')->isValid()) 
-        {
+        $sicker->name = $request->get('title');
+        $sicker->category_id = $request->get('category');
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
             $image = $request->file('image');
-            
+
             $extension = $image->getClientOriginalExtension();
             $fileName = Str::uuid() . '.' . $extension;
-            
-             if(Setting::getValue('storage_type') == "digitalOccean"){
-                $item_url = Storage::disk('spaces')->put('uploads/sticker/'.$fileName, file_get_contents($image),'public');
-                $item_url = env("DO_SPACES_URL").'/uploads/sticker/'.$fileName;
-            }else{
+
+            if (Setting::getValue('storage_type') == 'digitalOccean') {
+                $item_url = Storage::disk('spaces')->put('uploads/sticker/' . $fileName, file_get_contents($image), 'public');
+                $item_url = env('DO_SPACES_URL') . '/uploads/sticker/' . $fileName;
+            } else {
                 $image->move('uploads/sticker', $fileName);
-                $item_url = 'uploads/sticker/'.$fileName;
+                $item_url = 'uploads/sticker/' . $fileName;
             }
-            
+
             @unlink($sicker->item_url);
             $sicker->item_url = $item_url;
         }
-       
+
         $sicker->save();
         return redirect()->route('sticker.index');
     }
@@ -230,11 +219,11 @@ class StickerController extends Controller
     public function destroy($id)
     {
         $sicker = Sticker::find($id);
-        
+
         @unlink($sicker->item_url);
 
         Sticker::find($id)->delete();
-        
+
         return redirect()->route('sticker.index');
     }
 }

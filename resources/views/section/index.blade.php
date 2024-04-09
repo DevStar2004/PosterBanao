@@ -1,5 +1,9 @@
 @extends('main')
 
+@php
+    $is_permitted = (App\Models\Admin::isPermission('section') == 'true');
+@endphp
+
 @section('content')
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <div class="row">
@@ -11,12 +15,14 @@
                         <h6 class="text-white">Sections</h6>
 
                         <div class="ms-auto mt-3">
-                            <a href="{{ route('section.create') }}" class="btn btn-success "><i class="fas fa-plus"></i> Add
-                                New</a>
+                            <a href="{{ route('section.create') }}" 
+                                class='btn btn-success {{$is_permitted ? "" : "disabled"}}'>
+                                <i class="fas fa-plus"></i> Add New
+                            </a>
                         </div>
                     </div>
                 </div>
-                @if (App\Models\Admin::isPermission('section') == 'true')
+                @if ($is_permitted == true)
                     <div class="card-body mt-n4">
 
                         <div class="row mb">
@@ -103,7 +109,7 @@
 
                     <div class="d-flex justify-content-center">{{ $sections->links() }}</div>
                 @else
-                    <span> You are not allowed on this page</span>
+                    <div style="text-align:center"> You are not allowed on this page</div>
                 @endif
             </div>
         </div>
