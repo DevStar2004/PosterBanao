@@ -24,7 +24,7 @@ class CustomController extends Controller
      */
     public function index()
     {
-        if (Admin::isPermission('posts') == 'true') {
+        if (Admin::isPermission('posts')) {
             $data['sections'] = Section::where('status', '0')->get();
 
             if(Session::get('admin_type') == 'Super') {

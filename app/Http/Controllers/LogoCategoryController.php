@@ -17,7 +17,7 @@ class LogoCategoryController extends Controller
      */
     public function index()
     {
-        if(Admin::isPermission('category') == 'true') {
+        if(Admin::isPermission('category')) {
             if(Session::get('admin_type') == 'Super')
                 $data['categories'] = LogoCategory::orderBy('id', 'DESC')->paginate(12);
             else

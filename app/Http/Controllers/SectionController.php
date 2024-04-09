@@ -18,7 +18,7 @@ class SectionController extends Controller
      */
     public function index()
     {
-        if (Admin::isPermission('section') == 'false') {
+        if (Admin::isPermission('section') == false) {
             return view('section.index');
         } else {
             if(Session::get('admin_type') == 'Super')

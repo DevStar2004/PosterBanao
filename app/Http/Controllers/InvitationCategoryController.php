@@ -18,7 +18,7 @@ class InvitationCategoryController extends Controller
      */
     public function index()
     {
-        if (Admin::isPermission('category') == 'true') {
+        if (Admin::isPermission('category')) {
             if(Session::get('admin_type') == 'Super')
                 $data['categories'] = InvitationCategory::orderBy('id', 'DESC')->paginate(22);
             else

@@ -16,7 +16,7 @@ class StickerCategoryController extends Controller
      */
     public function index()
     {
-        if(Admin::isPermission('category') == 'true') {
+        if(Admin::isPermission('category')) {
             $data['categories'] = StickerCategory::where('owner_id', Session::get('userid'))->orderBy('id', 'DESC')->paginate(22);
             // echo(json_encode($data['posts']));
             // die();

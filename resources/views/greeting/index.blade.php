@@ -1,7 +1,7 @@
 @extends('main')
 
 @php
-    $is_permitted = App\Models\Admin::isPermission('greeting') == 'true';
+    $is_permitted = App\Models\Admin::isPermission('greeting');
 @endphp
 
 @section('content')

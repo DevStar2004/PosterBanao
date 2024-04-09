@@ -25,7 +25,7 @@ class FestivalController extends Controller
      */
     public function index()
     {
-        if (Admin::isPermission('posts') == 'true') {
+        if (Admin::isPermission('posts')) {
             $posts = Posts::where('orientation', null)->get();
             foreach ($posts as $post) {
                 $p = Posts::find($post->id);
