@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Promocode;
+use App\Models\Admin;
 
 class PromocodeController extends Controller
 {
@@ -14,15 +15,19 @@ class PromocodeController extends Controller
      */
     public function index()
     {
-        $data['promocodes'] = Promocode::get();
-        return view('promocode.index',$data);
+        if (Admin::isPermission('admin')) {
+            $data['promocodes'] = Promocode::get();
+            return view('promocode.index', $data);
+        } else {
+            return back();
+        }
     }
-    
+
     public function promocode_status(Request $request)
     {
         // echo("okk");
-        $posts = Promocode::find($request->get("id"));
-        $posts->status = ($request->get("checked")=="true")?0:1;
+        $posts = Promocode::find($request->get('id'));
+        $posts->status = $request->get('checked') == 'true' ? 0 : 1;
         $posts->save();
     }
     /**
@@ -44,15 +49,15 @@ class PromocodeController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-             'code' => 'required',
-             'discount' => 'required',
-             'total_use' => 'required',
+            'code' => 'required',
+            'discount' => 'required',
+            'total_use' => 'required',
         ]);
         // return  $request->get('discount');
         $code = new Promocode();
-        $code->code = $request->get("code");
-        $code->discount = $request->get("discount");
-        $code->total_use = $request->get("total_use");
+        $code->code = $request->get('code');
+        $code->discount = $request->get('discount');
+        $code->total_use = $request->get('total_use');
         $code->save();
         return redirect()->route('promocode.index');
     }
@@ -77,7 +82,7 @@ class PromocodeController extends Controller
     public function edit($id)
     {
         $data['promocode'] = Promocode::find($id);
-        return view('promocode.edit',$data);
+        return view('promocode.edit', $data);
     }
 
     /**
@@ -89,16 +94,16 @@ class PromocodeController extends Controller
      */
     public function update(Request $request, $id)
     {
-         $validatedData = $request->validate([
-             'code' => 'required',
-             'discount' => 'required',
-             'total_use' => 'required',
+        $validatedData = $request->validate([
+            'code' => 'required',
+            'discount' => 'required',
+            'total_use' => 'required',
         ]);
         // return  $request->get('discount');
         $code = Promocode::find($id);
-        $code->code = $request->get("code");
-        $code->discount = $request->get("discount");
-        $code->total_use = $request->get("total_use");
+        $code->code = $request->get('code');
+        $code->discount = $request->get('discount');
+        $code->total_use = $request->get('total_use');
         $code->save();
         return redirect()->route('promocode.index');
     }

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\Services;
 use App\Models\ServiceInquiries;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Storage;
 use App\Models\Setting;
+use Session;
 
 class ServicesController extends Controller
 {
@@ -19,15 +21,19 @@ class ServicesController extends Controller
      */
     public function index()
     {
-        $data['services'] = Services::paginate(12);
-        return view('services.index',$data);
+        if(Admin::isPermission(('admin'))) {
+            $data['services'] = Services::paginate(12);
+            return view('services.index',$data);
+        } else return back();
     }
     
     public function service_inquiries()
     {
-        $data['inquiries'] = ServiceInquiries::with('user')->with('service')->paginate(12);
-        // echo(json_encode($data));
-        return view('services.inquiries',$data);
+        if(Admin::isPermission('admin')){
+            $data['inquiries'] = ServiceInquiries::with('user')->with('service')->paginate(12);
+            // echo(json_encode($data));
+            return view('services.inquiries', $data);
+        } else return back();
     }
     
     public function deleteInquiry($id){
