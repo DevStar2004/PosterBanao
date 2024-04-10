@@ -45,8 +45,8 @@ use App\Models\SubCategory;
 use App\Models\LogoCategory;
 use App\Models\Background;
 
-use App\Models\VideoTamplate;
-use App\Models\VideoTamplateCategory;
+use App\Models\VideoTemplate;
+use App\Models\VideoTemplateCategory;
 
 use Illuminate\Support\Facades\Storage;
 use PDF;
@@ -106,7 +106,7 @@ class Controller extends BaseController
     
     function getVideoTamplates(Request $request){
         $category = $request->get('category');
-        $videos = VideoTamplate::where('status','0');
+        $videos = VideoTemplate::where('status','0');
         
         if($category != ""){
             $videos->where('category_id',$category);
@@ -297,7 +297,7 @@ class Controller extends BaseController
                 $query->inRandomOrder()->limit(7);
             }))->where('status','0')->orderBy('orders',"ASC")->get();
         
-        $out['video_tamplate_category'] = VideoTamplateCategory::with(array('videos'=>function($query){
+        $out['video_tamplate_category'] = VideoTemplateCategory::with(array('videos'=>function($query){
                  $query->latest()->limit(1);
             }))->where('status','0')->orderBy('orders',"ASC")->get();
         
@@ -503,7 +503,7 @@ class Controller extends BaseController
         $type = $request->get('type');
         $search = $request->get('search');
         
-        $categories = VideoTamplateCategory::with(array('videos'=>function($query){
+        $categories = VideoTemplateCategory::with(array('videos'=>function($query){
                  $query->latest()->limit(1);
             }))->where('status','0');
         
